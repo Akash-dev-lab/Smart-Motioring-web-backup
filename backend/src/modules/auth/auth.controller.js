@@ -68,7 +68,7 @@ export const login = async (req, res) => {
     res.cookie("refreshToken", refreshToken, refreshCookieOptions);
 
     res.json({
-      message: "Login successfull",
+      message: "Login successful",
       user: {
         id: user._id,
         name: user.name,
