@@ -4,7 +4,7 @@ import AIInsight from "../ai/ai.model.js";
 
 export const triggerAlert = async ({ monitorId, incident }) => {
   try {
-    const recipient = process.env.ALERT_TO_EMAIL || process.env.ALERT_EMAIL;
+    const recipient = process.env.ALERT_EMAIL;
 
     // 🧠 GET AI DATA
     const ai = await AIInsight.findOne({
@@ -34,9 +34,8 @@ export const triggerAlert = async ({ monitorId, incident }) => {
 🔗 Monitor ID: ${incident.monitorId}
 ❌ Failures: ${incident.failCount}
 
-${
-  ai
-    ? `
+${ai
+        ? `
 🧠 AI ANALYSIS
 Status: ${ai.status}
 
@@ -46,8 +45,8 @@ ${ai.reason}
 Suggestions:
 ${formattedSuggestions}
 `
-    : "⚠️ AI analysis not available"
-}
+        : "⚠️ AI analysis not available"
+      }
 `;
 
     // 📤 SEND EMAIL
@@ -65,10 +64,10 @@ ${formattedSuggestions}
       message,
       ai: ai
         ? {
-            status: ai.status,
-            reason: ai.reason,
-            suggestion: suggestions
-          }
+          status: ai.status,
+          reason: ai.reason,
+          suggestion: suggestions
+        }
         : null
     });
 

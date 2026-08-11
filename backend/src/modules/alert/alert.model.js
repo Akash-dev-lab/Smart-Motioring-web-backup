@@ -4,10 +4,12 @@ const alertSchema = new mongoose.Schema({
   monitorId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "Monitor",
+    required: true
   },
   incidentId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "Incident",
+    required: true
   },
   type: {
     type: String,
@@ -17,10 +19,14 @@ const alertSchema = new mongoose.Schema({
   status: {
     type: String,
     enum: ["SENT", "FAILED"],
+    required: true
   },
-  message: String,
+  message: {
+    type: String,
+    required: true
+  },
 
-   ai: {
+  ai: {
     status: String,
     reason: String,
     suggestion: [String],
