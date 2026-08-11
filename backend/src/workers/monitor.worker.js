@@ -1,7 +1,7 @@
 import { Worker } from "bullmq";
 import axios from "axios";
 import { redisConnection } from "../queues/queue.connection.js";
-import Log from "../modules/logs/log.model.js";
+import { createLog } from '../modules/logs/log.repository.js';
 import Monitor from "../modules/monitor/monitor.model.js";
 import { removeMonitorJob } from "../modules/monitor/monitor.scheduler.js";
 import { handleFailure, handleSuccess } from "../modules/incident/incident.processor.js";
@@ -40,7 +40,7 @@ export const startBullWorker = () => {
         latency = Date.now() - start;
         success = true;
 
-        await Log.create({
+        await createLog({
           monitorId,
           status: res.status,
           responseTime: latency,
@@ -55,7 +55,7 @@ export const startBullWorker = () => {
         latency = 0;
         success = false;
 
-        await Log.create({
+        await createLog({
           monitorId,
           status: err.response?.status || 500,
           responseTime: latency,
