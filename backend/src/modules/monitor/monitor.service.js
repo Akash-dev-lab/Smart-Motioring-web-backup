@@ -1,4 +1,5 @@
 import Monitor from './monitor.model.js';
+import { addMonitorJob, removeMonitorJob } from './monitor.scheduler.js';
 
 export const createMonitor = async payload => {
   const existingMonitor = await Monitor.findOne({
@@ -11,7 +12,13 @@ export const createMonitor = async payload => {
     throw new Error('A monitor with this URL and HTTP method already exists.');
   }
 
-  return await Monitor.create(payload);
+  const monitor = await Monitor.create(payload);
+
+  if (!monitor.active) return monitor;
+
+  await addMonitorJob(monitor);
+
+  return monitor;
 };
 
 export const getActiveMonitors = async () => {
@@ -33,16 +40,43 @@ export const getMonitorById = async (id, userId) => {
 //   return await Monitor.find().sort({ createdAt: -1 });
 // };
 
-// 🔥 UPDATE
+// 🔥 UPDATE & RESCHEDULE
 export const updateMonitorById = async (id, userId, data) => {
-  return await Monitor.findOneAndUpdate({ _id: id, userId }, data, {
-    new: true,
-  });
+  const existingMonitor = await Monitor.findOne({ _id: id, userId });
+  if (!existingMonitor) return null;
+
+  // 1. Remove old job schedule
+  await removeMonitorJob(existingMonitor._id, existingMonitor.interval);
+
+  // 2. Update monitor in database
+  const updatedMonitor = await Monitor.findOneAndUpdate(
+    { _id: id, userId },
+    data,
+    { new: true }
+  );
+
+  // 3. Reschedule job with new settings if monitor is active
+  if (updatedMonitor && updatedMonitor.active) {
+    await addMonitorJob(updatedMonitor);
+  }
+
+  return updatedMonitor;
 };
 
 // 🔥 DELETE
 export const deleteMonitorById = async (id, userId) => {
-  return await Monitor.findOneAndDelete({ _id: id, userId });
+  const monitor = await Monitor.findOneAndDelete({
+    _id: id,
+    userId,
+  });
+
+  if (!monitor) {
+    return null;
+  }
+
+  await removeMonitorJob(monitor._id, monitor.interval);
+
+  return monitor;
 };
 
 const setMonitorStatus = async (id, userId, active) => {
@@ -54,9 +88,47 @@ const setMonitorStatus = async (id, userId, active) => {
 };
 
 export const pauseMonitor = async (id, userId) => {
-  return await setMonitorStatus(id, userId, false);
+  const monitor = await Monitor.findOneAndUpdate(
+    {
+      _id: id,
+      userId,
+    },
+    {
+      active: false,
+    },
+    {
+      new: true,
+    }
+  );
+
+  if (monitor) {
+    await removeMonitorJob(monitor._id, monitor.interval);
+  } else {
+    console.log("Monitor Not Found...");
+  }
+
+  return monitor;
 };
 
 export const resumeMonitor = async (id, userId) => {
-  return await setMonitorStatus(id, userId, true);
+  const monitor = await Monitor.findOneAndUpdate(
+    {
+      _id: id,
+      userId,
+    },
+    {
+      active: true,
+    },
+    {
+      new: true,
+    }
+  );
+
+  if (monitor) {
+    await addMonitorJob(monitor);
+  } else {
+    console.log("Monitor Not Found...");
+  }
+
+  return monitor;
 };

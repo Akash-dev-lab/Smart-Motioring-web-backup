@@ -4,16 +4,15 @@ import "dotenv/config";
 
 import app from "./src/app.js";
 import { connectDB } from "./src/config/db.js";
+import dns from "dns";
 
-import { startScheduler } from "./src/modules/monitor/monitor.scheduler.js";
+dns.setServers(["1.1.1.1", "8.8.8.8"]);
+
 import { startBullWorker } from "./src/workers/monitor.worker.js";
-
 
 const startServer = async () => {
   try {
     await connectDB();
-
-    startScheduler();
 
     startBullWorker();
 

@@ -1,59 +1,107 @@
-import Monitor from './monitor.model.js';
-import { monitorQueue } from '../monitor/monitor.queue.js';
-import { getActiveMonitors } from "./monitor.service.js";
+import { monitorQueue } from '../../queues/monitor.queue.js';
 
-export const startScheduler = () => {
-  console.log('🟢 Scheduler started...');
+const getMonitorJobId = monitorId =>
+  `monitor:${monitorId}`;
 
-  let lastRunMap = new Map();
+/**
+ * Add recurring monitor job
+ */
+export const addMonitorJob = async monitor => {
+  const {
+    _id,
+    url,
+    method,
+    interval,
+  } = monitor;
 
-  setInterval(async () => {
-    try {
-      const monitors = await getActiveMonitors();
+  if (!_id || !url || !method || !interval) {
+    throw new Error(
+      'Monitor ID, URL, method and interval are required'
+    );
+  }
 
-      for (const monitor of monitors) {
-        const now = Date.now();
-        const id = monitor._id.toString();
+  const jobId = getMonitorJobId(_id);
 
-        const lastRun = lastRunMap.get(id) || 0;
+  await monitorQueue.add(
+    'check-url',
+    {
+      monitorId: _id.toString(),
+      url,
+      method,
+    },
+    {
+      jobId,
 
-        // ✅ INTERVAL CONTROL
-        if (now - lastRun >= monitor.interval) {
-          const job = {
-            monitorId: monitor._id,
-            url: monitor.url,
-            method: monitor.method,
-            createdAt: new Date(),
-          };
+      repeat: {
+        every: interval,
+      },
 
-          await monitorQueue.add(
-            'check-url',
-            {
-              monitorId: monitor._id.toString(),
-              url: monitor.url,
-              method: monitor.method,
-            },
-            {
-              attempts: 3, // 🔥 retry built-in
-              backoff: {
-                type: 'exponential',
-                delay: 2000,
-              },
-              removeOnComplete: true,
-              removeOnFail: false,
-            }
-          );
+      attempts: 3,
 
-           lastRunMap.set(id, now);
+      backoff: {
+        type: 'exponential',
+        delay: 2000,
+      },
 
-          console.log('📦 Job queued (BullMQ):', monitor.url);
-        }
-      }
-    } catch (error) {
-      console.error('❌ Scheduler error:', error.message);
+      removeOnComplete: true,
+      removeOnFail: false,
     }
-  }, 5000); // every 5 sec (testing ke liye fast rakha hai)
+  );
+
+  console.log(
+    `📅 Monitor scheduled: ${url} | every ${interval}ms`
+  );
+
+  return true;
 };
 
-// 🔥 queue export karenge worker ke liye
-export const getQueue = () => monitorQueue;
+/**
+ * Remove recurring monitor job
+ */
+export const removeMonitorJob = async (
+  monitorId,
+  interval
+) => {
+  if (!monitorId) {
+    throw new Error('Monitor ID is required');
+  }
+
+  const idStr = monitorId.toString();
+  const jobId = getMonitorJobId(idStr);
+
+  // 1. Primary: Use BullMQ removeRepeatable with exact interval
+  if (interval) {
+    await monitorQueue.removeRepeatable(
+      'check-url',
+      { every: Number(interval) },
+      jobId
+    );
+  }
+
+  // 2. Secondary fallback: Search getRepeatableJobs list by key or id match
+  const repeatableJobs = await monitorQueue.getRepeatableJobs();
+  for (const job of repeatableJobs) {
+    if (
+      job.id === jobId ||
+      job.id === idStr ||
+      job.key.includes(idStr) ||
+      (job.every && String(job.every) === String(interval))
+    ) {
+      await monitorQueue.removeRepeatableByKey(job.key);
+    }
+  }
+
+  // console.log(`🗑️ Monitor schedule removed: ${idStr}`);
+  return true;
+};
+
+/**
+ * Clear all repeatable jobs from Redis queue (useful for resetting test state)
+ */
+export const clearAllRepeatableJobs = async () => {
+  const repeatableJobs = await monitorQueue.getRepeatableJobs();
+  for (const job of repeatableJobs) {
+    await monitorQueue.removeRepeatableByKey(job.key);
+  }
+  console.log(`🧹 Cleared all ${repeatableJobs.length} repeatable jobs from Redis.`);
+};

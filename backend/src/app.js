@@ -8,6 +8,8 @@ import dashboardRoutes from "./modules/dashboard/dashboard.routes.js";
 import authRoutes from "./modules/auth/auth.routes.js";
 import incidentRoutes from "./modules/incident/incident.routes.js";
 
+// import adminRoutes from "./modules/admin/admin.routes.js";
+
 const app = express();
 
 // CORS Configuration
@@ -42,6 +44,13 @@ app.use(cookieParser());
 app.use(express.json());
 
 // Routes
+app.use("/auth", authRoutes);
+app.use("/logs", logRoutes);
+app.use("/ai", aiRoutes);
+app.use("/monitors", monitorRoutes);
+app.use("/dashboard", dashboardRoutes);
+app.use("/incidents", incidentRoutes);
+// app.use("/admin", adminRoutes);
 app.use("/auth", authRoutes);
 app.use("/logs", logRoutes);
 app.use("/ai", aiRoutes);

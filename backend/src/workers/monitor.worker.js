@@ -1,7 +1,9 @@
 import { Worker } from "bullmq";
 import axios from "axios";
-import { connection } from "../config/redis.js";
+import { redisConnection } from "../queues/queue.connection.js";
 import Log from "../modules/logs/log.model.js";
+import Monitor from "../modules/monitor/monitor.model.js";
+import { removeMonitorJob } from "../modules/monitor/monitor.scheduler.js";
 import { handleFailure, handleSuccess } from "../modules/incident/incident.processor.js";
 
 export const startBullWorker = () => {
@@ -9,6 +11,19 @@ export const startBullWorker = () => {
     "monitor-queue",
     async (job) => {
       const { monitorId, url, method } = job.data;
+
+      // Self-healing check: Verify monitor exists in DB and is active
+      const monitor = await Monitor.findById(monitorId);
+      if (!monitor || !monitor.active) {
+        // console.log(`⚠️ Monitor ${monitorId} not found or inactive. Cleaning up queue job.`);
+        await removeMonitorJob(monitorId);
+        try {
+          await job.remove();
+        } catch (e) {
+          // ignore if already removed
+        }
+        return;
+      }
 
       let success = false;
       let latency = 0;
@@ -34,7 +49,7 @@ export const startBullWorker = () => {
 
         console.log(`✅ ${url} (${latency}ms)`);
 
-         await handleSuccess(monitorId);
+        await handleSuccess(monitorId);
 
       } catch (err) {
         latency = 0;
@@ -49,12 +64,12 @@ export const startBullWorker = () => {
 
         console.log(`❌ Failed: ${url} - ${err.message}`);
 
-          // 🔥 FAILURE → INCIDENT COUNT
+        // 🔥 FAILURE → INCIDENT COUNT
         await handleFailure(monitorId);
       }
     },
     {
-      connection,
+      connection: redisConnection,
       concurrency: 5
     }
   );
