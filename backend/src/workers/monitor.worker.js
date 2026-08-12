@@ -3,6 +3,7 @@ import axios from "axios";
 import { redisConnection } from "../queues/queue.connection.js";
 import { createLog } from '../modules/logs/log.repository.js';
 import Monitor from "../modules/monitor/monitor.model.js";
+import { setCache } from "../utils/cache.js";
 import { removeMonitorJob } from "../modules/monitor/monitor.scheduler.js";
 import { handleFailure, handleSuccess } from "../modules/incident/incident.processor.js";
 
@@ -47,6 +48,18 @@ export const startBullWorker = () => {
           success: true
         });
 
+        await setCache(
+          `monitor:${monitorId}:status`,
+          {
+            monitorId,
+            status: res.status,
+            responseTime: latency,
+            success: true,
+            checkedAt: new Date().toISOString()
+          },
+          30
+        );
+
         console.log(`✅ ${url} (${latency}ms)`);
 
         await handleSuccess(monitorId);
@@ -61,6 +74,18 @@ export const startBullWorker = () => {
           responseTime: latency,
           success: false
         });
+
+        await setCache(
+          `monitor:${monitorId}:status`,
+          {
+            monitorId,
+            status: err.response?.status || 500,
+            responseTime: latency,
+            success: false,
+            checkedAt: new Date().toISOString()
+          },
+          30
+        );
 
         console.log(`❌ Failed: ${url} - ${err.message}`);
 

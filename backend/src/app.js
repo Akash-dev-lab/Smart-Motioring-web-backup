@@ -7,6 +7,7 @@ import aiRoutes from "./modules/ai/ai.routes.js";
 import dashboardRoutes from "./modules/dashboard/dashboard.routes.js";
 import authRoutes from "./modules/auth/auth.routes.js";
 import incidentRoutes from "./modules/incident/incident.routes.js";
+import { apiRateLimiter } from "./middleware/rateLimiter.js";
 
 // import adminRoutes from "./modules/admin/admin.routes.js";
 
@@ -42,6 +43,7 @@ const corsOptions = {
 app.use(cors(corsOptions));
 app.use(cookieParser());
 app.use(express.json());
+app.use(apiRateLimiter);
 
 // Routes
 app.use("/auth", authRoutes);
@@ -51,17 +53,11 @@ app.use("/monitors", monitorRoutes);
 app.use("/dashboard", dashboardRoutes);
 app.use("/incidents", incidentRoutes);
 // app.use("/admin", adminRoutes);
-app.use("/auth", authRoutes);
-app.use("/logs", logRoutes);
-app.use("/ai", aiRoutes);
-app.use("/monitors", monitorRoutes);
-app.use("/dashboard", dashboardRoutes);
-app.use("/incidents", incidentRoutes);
 
 // Health check endpoint
 app.get("/", (req, res) => {
-  res.json({ 
-    status: "ok", 
+  res.json({
+    status: "ok",
     message: "Smart Monitoring API is running",
     timestamp: new Date().toISOString()
   });

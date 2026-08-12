@@ -53,7 +53,7 @@ export const createMonitorController = async (req, res) => {
       });
     }
 
-    if(err) {
+    if (err) {
       return res.status(409).json({
         success: false,
         message: err.message
@@ -69,15 +69,73 @@ export const createMonitorController = async (req, res) => {
 
 export const getAllMonitorsController = async (req, res) => {
   try {
-    const monitors = await getAllMonitors(req.user.userId);
+    let {
+      page = 1,
+      limit = 10,
+      search = '',
+      active,
+      method,
+      sortBy = 'createdAt',
+      sortOrder = 'desc',
+    } = req.query;
+
+    // 🔢 PAGINATION VALIDATION
+    page = Number(page);
+    limit = Number(limit);
+
+    if (!Number.isInteger(page) || page < 1) {
+      return res.status(400).json({
+        success: false,
+        message: 'Page must be a positive integer',
+      });
+    }
+
+    if (!Number.isInteger(limit) || limit < 1 || limit > 100) {
+      return res.status(400).json({
+        success: false,
+        message: 'Limit must be between 1 and 100',
+      });
+    }
+
+    // 🔥 ACTIVE FILTER VALIDATION
+    if (active !== undefined && active !== 'true' && active !== 'false') {
+      return res.status(400).json({
+        success: false,
+        message: 'Active must be true or false',
+      });
+    }
+
+    // Convert query string → boolean
+    const activeFilter =
+      active === undefined ? undefined : active === 'true';
+
+    const result = await getAllMonitors(req.user.userId, {
+      page,
+      limit,
+      search,
+      active: activeFilter,
+      method,
+      sortBy,
+      sortOrder,
+    });
 
     return res.json({
       success: true,
       message: 'Monitors fetched successfully',
-      count: monitors.length,
-      data: monitors,
+      count: result.monitors.length,
+      data: result.monitors,
+      pagination: {
+        page: result.page,
+        limit: result.limit,
+        total: result.total,
+        totalPages: result.totalPages,
+        hasNextPage: result.page < result.totalPages,
+        hasPreviousPage: result.page > 1,
+      },
     });
   } catch (err) {
+    console.error('Get monitors error:', err);
+
     return res.status(500).json({
       success: false,
       message: 'Internal Server Error',

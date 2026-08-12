@@ -1,5 +1,6 @@
 import Monitor from './monitor.model.js';
 import { addMonitorJob, removeMonitorJob } from './monitor.scheduler.js';
+import { invalidateDashboardCache } from '../dashboard/dashboard.cache.js';
 
 export const createMonitor = async payload => {
   const existingMonitor = await Monitor.findOne({
@@ -14,6 +15,8 @@ export const createMonitor = async payload => {
 
   const monitor = await Monitor.create(payload);
 
+  await invalidateDashboardCache();
+
   if (!monitor.active) return monitor;
 
   await addMonitorJob(monitor);
@@ -26,8 +29,74 @@ export const getActiveMonitors = async () => {
 };
 
 // 🔥 GET ALL
-export const getAllMonitors = async userId => {
-  return await Monitor.find({ userId }).sort({ createdAt: -1 });
+export const getAllMonitors = async (
+  userId,
+  {
+    page = 1,
+    limit = 10,
+    search = '',
+    active,
+    method,
+    sortBy = 'createdAt',
+    sortOrder = 'desc',
+  } = {}
+) => {
+  const filter = { userId };
+
+  // 🔎 SEARCH
+  if (search.trim()) {
+    const escapedSearch = search.trim().replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+
+    filter.url = {
+      $regex: escapedSearch,
+      $options: 'i',
+    };
+  }
+
+  // 🔥 ACTIVE FILTER
+  if (active !== undefined) {
+    filter.active = active;
+  }
+
+  // 🔥 HTTP METHOD FILTER
+  if (method) {
+    filter.method = method.toUpperCase();
+  }
+
+  // 🔢 PAGINATION
+  const skip = (page - 1) * limit;
+
+  // ↕️ SORTING
+  const allowedSortFields = [
+    'createdAt',
+    'updatedAt',
+    'url',
+    'interval',
+    'active',
+  ];
+
+  const safeSortBy = allowedSortFields.includes(sortBy)
+    ? sortBy
+    : 'createdAt';
+
+  const safeSortOrder = sortOrder === 'asc' ? 1 : -1;
+
+  const [monitors, total] = await Promise.all([
+    Monitor.find(filter)
+      .sort({ [safeSortBy]: safeSortOrder })
+      .skip(skip)
+      .limit(limit),
+
+    Monitor.countDocuments(filter),
+  ]);
+
+  return {
+    monitors,
+    total,
+    page,
+    limit,
+    totalPages: Math.ceil(total / limit),
+  };
 };
 
 // 🔥 GET BY ID
@@ -60,6 +129,8 @@ export const updateMonitorById = async (id, userId, data) => {
     await addMonitorJob(updatedMonitor);
   }
 
+  await invalidateDashboardCache();
+
   return updatedMonitor;
 };
 
@@ -75,6 +146,7 @@ export const deleteMonitorById = async (id, userId) => {
   }
 
   await removeMonitorJob(monitor._id, monitor.interval);
+  await invalidateDashboardCache();
 
   return monitor;
 };
@@ -103,6 +175,7 @@ export const pauseMonitor = async (id, userId) => {
 
   if (monitor) {
     await removeMonitorJob(monitor._id, monitor.interval);
+    await invalidateDashboardCache();
   } else {
     console.log("Monitor Not Found...");
   }
@@ -126,6 +199,7 @@ export const resumeMonitor = async (id, userId) => {
 
   if (monitor) {
     await addMonitorJob(monitor);
+    await invalidateDashboardCache();
   } else {
     console.log("Monitor Not Found...");
   }

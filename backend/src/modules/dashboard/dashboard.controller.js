@@ -2,9 +2,17 @@ import Monitor from "../monitor/monitor.model.js";
 import Log from "../logs/log.model.js";
 import Incident from "../incident/incident.model.js";
 import AIInsight from "../ai/ai.model.js";
+import { DASHBOARD_SUMMARY_KEY, DASHBOARD_MONITORS_KEY, getCachedJson, setCachedJson } from "./dashboard.cache.js ";
 
 export const getDashboardSummary = async (req, res) => {
   try {
+
+    const cached = await getCachedJson(DASHBOARD_SUMMARY_KEY);
+
+    if (cached) {
+      return res.json(cached);
+    }
+
     const totalMonitors = await Monitor.countDocuments();
     const activeIncidents = await Incident.countDocuments({ status: "OPEN" });
 
@@ -15,25 +23,44 @@ export const getDashboardSummary = async (req, res) => {
       ? ((successLogs / totalLogs) * 100).toFixed(2)
       : 0;
 
-    res.json({
+    const summary = {
       totalMonitors,
       activeIncidents,
-      uptime
-    });
+      uptime,
+    };
+
+    await setCachedJson(DASHBOARD_SUMMARY_KEY, summary);
+
+    return res.json(summary);
 
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    return res.status(500).json({ error: err.message });
   }
 };
 
 export const getAllMonitorsDashboard = async (req, res) => {
   try {
+
+    const cached = await getCachedJson(DASHBOARD_MONITORS_KEY);
+
+    if (cached) {
+      return res.json(cached);
+    }
+
     const monitors = await Monitor.find().sort({ createdAt: -1 });
 
-    res.json(monitors);
+    const data = monitors.map(monitor =>
+      typeof monitor.toObject === "function"
+        ? monitor.toObject()
+        : monitor
+    );
+
+    await setCachedJson(DASHBOARD_MONITORS_KEY, data);
+
+    return res.json(data);
 
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    return res.status(500).json({ error: err.message });
   }
 };
 
