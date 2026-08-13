@@ -55,6 +55,10 @@ export const loginUser = async ({ email, password }) => {
   const isMatch = await bcrypt.compare(password, user.password);
   if (!isMatch) throw new Error("Invalid credentials");
 
+  if (!user.isActive) {
+    throw new Error("Account is disabled. Please contact admin.");
+  }
+
   const { accessToken, refreshToken } = generateTokens(user);
 
   user.refreshToken = refreshToken;
@@ -73,10 +77,18 @@ export const refreshAccessToken = async (token) => {
       throw new Error("Invalid refresh token");
     }
 
+    if (!user.isActive) {
+      throw new Error("Account is disabled. Please contact admin.");
+    }
+
     const { accessToken } = generateTokens(user);
 
     return { accessToken };
-  } catch {
+  } catch (err) {
+    if (err.message === "Account is disabled. Please contact admin.") {
+      throw err;
+    }
+
     throw new Error("Invalid refresh token");
   }
 };

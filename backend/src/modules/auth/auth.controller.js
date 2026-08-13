@@ -36,6 +36,7 @@ export const register = async (req, res) => {
         name: user.name,
         email: user.email,
         role: user.role,
+        isActive: user.isActive,
       },
     });
   } catch (err) {
@@ -74,6 +75,7 @@ export const login = async (req, res) => {
         name: user.name,
         email: user.email,
         role: user.role,
+        isActive: user.isActive,
       },
     });
   } catch (err) {
@@ -117,7 +119,7 @@ export const logout = async (req, res) => {
       secure: true,
       sameSite: "none",
     });
-    
+
     res.clearCookie("refreshToken", {
       httpOnly: true,
       secure: true,

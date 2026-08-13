@@ -8,8 +8,7 @@ import dashboardRoutes from "./modules/dashboard/dashboard.routes.js";
 import authRoutes from "./modules/auth/auth.routes.js";
 import incidentRoutes from "./modules/incident/incident.routes.js";
 import { apiRateLimiter } from "./middleware/rateLimiter.js";
-
-// import adminRoutes from "./modules/admin/admin.routes.js";
+import adminRoutes from "./modules/admin/admin.routes.js";
 
 const app = express();
 
@@ -35,7 +34,7 @@ const corsOptions = {
     callback(new Error("Not allowed by CORS"));
   },
   credentials: true,
-  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+  methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
   allowedHeaders: ["Content-Type", "Authorization"],
 };
 
@@ -52,7 +51,7 @@ app.use("/ai", aiRoutes);
 app.use("/monitors", monitorRoutes);
 app.use("/dashboard", dashboardRoutes);
 app.use("/incidents", incidentRoutes);
-// app.use("/admin", adminRoutes);
+app.use("/admin", adminRoutes);
 
 // Health check endpoint
 app.get("/", (req, res) => {
