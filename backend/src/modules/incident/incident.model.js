@@ -23,4 +23,14 @@ const incidentSchema = new mongoose.Schema({
   resolvedAt: Date,
 }, { timestamps: true });
 
+incidentSchema.index({
+  status: 1,
+  createdAt: -1,
+});
+
+incidentSchema.index({
+  monitorId: 1,
+  createdAt: -1,
+});
+
 export default mongoose.model("Incident", incidentSchema);

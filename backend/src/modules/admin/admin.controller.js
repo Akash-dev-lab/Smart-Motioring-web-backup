@@ -1,4 +1,5 @@
-import { getAllUsers, disableUser, enableUser, updateUserRole, getMonitorStats } from "./admin.service.js";
+import { getAllUsers, disableUser, enableUser, updateUserRole, getMonitorStats, getAllIncidentsAdmin } from "./admin.service.js";
+import { getSystemStats } from "./admin.stats.js";
 import mongoose from "mongoose";
 
 export const getAllUsersController = async (req, res) => {
@@ -210,6 +211,101 @@ export const getMonitorStatsController = async (req, res) => {
         });
     } catch (err) {
         console.error("Admin monitor stats error:", err);
+
+        return res.status(500).json({
+            success: false,
+            message: "Internal Server Error",
+        });
+    }
+};
+
+export const getAllIncidentsAdminController = async (req, res) => {
+    try {
+        let {
+            page = 1,
+            limit = 10,
+            status,
+        } = req.query;
+
+        page = Number(page);
+        limit = Number(limit);
+
+        // Pagination validation
+        if (!Number.isInteger(page) || page < 1) {
+            return res.status(400).json({
+                success: false,
+                message: "Page must be a positive integer",
+            });
+        }
+
+        if (
+            !Number.isInteger(limit) ||
+            limit < 1 ||
+            limit > 100
+        ) {
+            return res.status(400).json({
+                success: false,
+                message: "Limit must be between 1 and 100",
+            });
+        }
+
+        // Status validation
+        if (
+            status &&
+            !["OPEN", "RESOLVED"].includes(status)
+        ) {
+            return res.status(400).json({
+                success: false,
+                message: "Status must be OPEN or RESOLVED",
+            });
+        }
+
+        const result = await getAllIncidentsAdmin({
+            page,
+            limit,
+            status,
+        });
+
+        return res.status(200).json({
+            success: true,
+            message: "Incidents fetched successfully",
+            count: result.incidents.length,
+            data: result.incidents,
+            pagination: {
+                page: result.page,
+                limit: result.limit,
+                total: result.total,
+                totalPages: result.totalPages,
+                hasNextPage:
+                    result.page < result.totalPages,
+                hasPreviousPage:
+                    result.page > 1,
+            },
+        });
+    } catch (err) {
+        console.error(
+            "Admin incident logs error:",
+            err
+        );
+
+        return res.status(500).json({
+            success: false,
+            message: "Internal Server Error",
+        });
+    }
+};
+
+export const getSystemStatsController = async (req, res) => {
+    try {
+        const stats = await getSystemStats();
+
+        return res.status(200).json({
+            success: true,
+            message: "System statistics fetched successfully",
+            data: stats,
+        });
+    } catch (err) {
+        console.error("Admin system stats error:", err);
 
         return res.status(500).json({
             success: false,

@@ -1,5 +1,6 @@
 import User from "../auth/auth.model.js";
 import Monitor from "../monitor/monitor.model.js";
+import Incident from "../incident/incident.model.js";
 
 export const getAllUsers = async ({
     page = 1,
@@ -273,4 +274,40 @@ export const getMonitorStats = async () => {
             averageResponseTime: 0,
         }
     );
+};
+
+export const getAllIncidentsAdmin = async ({
+    page = 1,
+    limit = 10,
+    status,
+}) => {
+    const skip = (page - 1) * limit;
+
+    const filter = {};
+
+    if (status) {
+        filter.status = status;
+    }
+
+    const [incidents, total] = await Promise.all([
+        Incident.find(filter)
+            .populate(
+                "monitorId",
+                "url method userId active"
+            )
+            .sort({ createdAt: -1 })
+            .skip(skip)
+            .limit(limit)
+            .lean(),
+
+        Incident.countDocuments(filter),
+    ]);
+
+    return {
+        incidents,
+        total,
+        page,
+        limit,
+        totalPages: Math.ceil(total / limit),
+    };
 };

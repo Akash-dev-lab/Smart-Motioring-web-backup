@@ -1,10 +1,5 @@
 import express from "express";
-import {
-  register,
-  login,
-  refresh,
-  logout,
-} from "./auth.controller.js";
+import { register, login, refresh, logout } from "./auth.controller.js";
 import { protect } from "./auth.middleware.js";
 import { authRateLimiter } from "../../middleware/rateLimiter.js";
 
