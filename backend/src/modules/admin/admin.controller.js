@@ -1,5 +1,4 @@
-import { getAllUsers } from "./admin.service.js";
-import { disableUser, enableUser } from "./admin.service.js";
+import { getAllUsers, disableUser, enableUser, updateUserRole, getMonitorStats } from "./admin.service.js";
 import mongoose from "mongoose";
 
 export const getAllUsersController = async (req, res) => {
@@ -124,6 +123,93 @@ export const enableUserController = async (req, res) => {
         });
     } catch (err) {
         console.error("Enable user error:", err);
+
+        return res.status(500).json({
+            success: false,
+            message: "Internal Server Error",
+        });
+    }
+};
+
+export const updateUserRoleController = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { role } = req.body;
+
+        // 1. Validate user ID
+        if (!mongoose.Types.ObjectId.isValid(id)) {
+            return res.status(400).json({
+                success: false,
+                message: 'Invalid user ID',
+            });
+        }
+
+        // 2. Validate role
+        if (!role || !['user', 'admin'].includes(role)) {
+            return res.status(400).json({
+                success: false,
+                message: 'Role must be either user or admin',
+            });
+        }
+
+        // 3. Prevent admin from changing their own role
+        if (id === req.user.userId.toString()) {
+            return res.status(400).json({
+                success: false,
+                message: 'Admin cannot change their own role',
+            });
+        }
+
+        // 4. Update role
+        const result = await updateUserRole(id, role);
+
+        if (result.type === 'NOT_FOUND') {
+            return res.status(404).json({
+                success: false,
+                message: 'User not found',
+            });
+        }
+
+        if (result.type === 'NO_CHANGE') {
+            return res.status(400).json({
+                success: false,
+                message: `User is already ${role}`,
+            });
+        }
+
+        if (result.type === 'LAST_ADMIN') {
+            return res.status(400).json({
+                success: false,
+                message: 'Cannot remove the last active admin',
+            });
+        }
+
+        return res.status(200).json({
+            success: true,
+            message: `User role updated to ${role}`,
+            data: result.user,
+        });
+    } catch (err) {
+        console.error('Update user role error:', err);
+
+        return res.status(500).json({
+            success: false,
+            message: 'Internal Server Error',
+        });
+    }
+};
+
+export const getMonitorStatsController = async (req, res) => {
+    try {
+        const stats = await getMonitorStats();
+
+        return res.status(200).json({
+            success: true,
+            message: "Monitor statistics fetched successfully",
+            data: stats,
+        });
+    } catch (err) {
+        console.error("Admin monitor stats error:", err);
 
         return res.status(500).json({
             success: false,
