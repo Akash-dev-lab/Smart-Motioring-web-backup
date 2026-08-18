@@ -11,7 +11,12 @@ import {
 
 export const createMonitorController = async (req, res) => {
   try {
-    const { url, method, interval } = req.body;
+    const {
+      url,
+      method,
+      interval,
+      monitoringTargets,
+    } = req.body;
 
     if (!url) {
       return res.status(400).json({
@@ -34,35 +39,51 @@ export const createMonitorController = async (req, res) => {
       });
     }
 
+    if (!Array.isArray(monitoringTargets)) {
+      return res.status(400).json({
+        success: false,
+        message: 'monitoringTargets must be an array',
+      });
+    }
+
+    if (!monitoringTargets.length) {
+      return res.status(400).json({
+        success: false,
+        message: 'monitoringTargets array must be hold a value.',
+      });
+    }
+
     const monitor = await createMonitor({
       url,
       method,
       interval,
+      monitoringTargets,
       userId: req.user.userId,
     });
+
     return res.status(201).json({
       success: true,
       message: 'Monitor created successfully',
       data: monitor,
     });
   } catch (err) {
-    if (err.name === 'ValidationError') {
+    if (
+      err.name === 'ValidationError' ||
+      err.name === 'CastError' ||
+      err.message?.includes('required') ||
+      err.message?.includes('monitoring target') ||
+      err.message?.includes('monitoring regions') ||
+      err.message?.includes('Duplicate')
+    ) {
       return res.status(400).json({
         success: false,
         message: err.message,
       });
     }
 
-    if (err) {
-      return res.status(409).json({
-        success: false,
-        message: err.message
-      })
-    }
-
-    return res.status(500).json({
+    return res.status(409).json({
       success: false,
-      message: 'Internal Server Error',
+      message: err.message,
     });
   }
 };
@@ -79,7 +100,6 @@ export const getAllMonitorsController = async (req, res) => {
       sortOrder = 'desc',
     } = req.query;
 
-    // 🔢 PAGINATION VALIDATION
     page = Number(page);
     limit = Number(limit);
 
@@ -97,7 +117,6 @@ export const getAllMonitorsController = async (req, res) => {
       });
     }
 
-    // 🔥 ACTIVE FILTER VALIDATION
     if (active !== undefined && active !== 'true' && active !== 'false') {
       return res.status(400).json({
         success: false,
@@ -105,7 +124,6 @@ export const getAllMonitorsController = async (req, res) => {
       });
     }
 
-    // Convert query string → boolean
     const activeFilter =
       active === undefined ? undefined : active === 'true';
 
@@ -143,7 +161,6 @@ export const getAllMonitorsController = async (req, res) => {
   }
 };
 
-// 🔥 GET BY ID
 export const getMonitorByIdController = async (req, res) => {
   try {
     const { id } = req.params;
@@ -177,19 +194,22 @@ export const getMonitorByIdController = async (req, res) => {
   }
 };
 
-// 🔥 UPDATE
 export const updateMonitorController = async (req, res) => {
   try {
     const { id } = req.params;
 
-    if (!mongoose.Types.ObjectId.isValid(id)) {       // Validate ObjectId in the controller
-      return res.status(400).json({             //This is cleaner, avoids unnecessary database
-        success: false,                        //calls, and scales well as more modules are added.
-        message: 'Invalid monitor ID',         // It first check the id and then make the db calls.
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({
+        success: false,
+        message: 'Invalid monitor ID',
       });
     }
 
-    const updated = await updateMonitorById(id, req.user.userId, req.body);
+    const updated = await updateMonitorById(
+      id,
+      req.user.userId,
+      req.body
+    );
 
     if (!updated) {
       return res.status(404).json({
@@ -204,6 +224,19 @@ export const updateMonitorController = async (req, res) => {
       data: updated,
     });
   } catch (err) {
+    if (
+      err.name === 'ValidationError' ||
+      err.name === 'CastError' ||
+      err.message?.includes('monitoring target') ||
+      err.message?.includes('monitoring regions') ||
+      err.message?.includes('Duplicate')
+    ) {
+      return res.status(400).json({
+        success: false,
+        message: err.message,
+      });
+    }
+
     return res.status(500).json({
       success: false,
       message: 'Internal Server Error',
@@ -211,12 +244,11 @@ export const updateMonitorController = async (req, res) => {
   }
 };
 
-// 🔥 DELETE
 export const deleteMonitorController = async (req, res) => {
   try {
     const { id } = req.params;
 
-    if (!mongoose.Types.ObjectId.isValid(id)) {     //same with this controller, check the id first
+    if (!mongoose.Types.ObjectId.isValid(id)) {
       return res.status(400).json({
         success: false,
         message: 'Invalid monitor ID',
@@ -245,36 +277,31 @@ export const pauseMonitorController = async (req, res) => {
   try {
     const { id } = req.params;
 
-    const monitor = await pauseMonitor(
-      id,
-      req.user.userId
-    );
+    const monitor = await pauseMonitor(id, req.user.userId);
 
     if (!monitor) {
       return res.status(404).json({
         success: false,
-        message: "Monitor not found",
+        message: 'Monitor not found',
       });
     }
 
     return res.json({
       success: true,
-      message: "Monitor paused successfully",
+      message: 'Monitor paused successfully',
       data: monitor,
     });
-
   } catch (err) {
-
-    if (err.name === "CastError") {
+    if (err.name === 'CastError') {
       return res.status(400).json({
         success: false,
-        message: "Invalid monitor ID",
+        message: 'Invalid monitor ID',
       });
     }
 
     return res.status(500).json({
       success: false,
-      message: "Internal Server Error",
+      message: 'Internal Server Error',
     });
   }
 };
@@ -283,36 +310,31 @@ export const resumeMonitorController = async (req, res) => {
   try {
     const { id } = req.params;
 
-    const monitor = await resumeMonitor(
-      id,
-      req.user.userId
-    );
+    const monitor = await resumeMonitor(id, req.user.userId);
 
     if (!monitor) {
       return res.status(404).json({
         success: false,
-        message: "Monitor not found",
+        message: 'Monitor not found',
       });
     }
 
     return res.json({
       success: true,
-      message: "Monitor resumed successfully",
+      message: 'Monitor resumed successfully',
       data: monitor,
     });
-
   } catch (err) {
-
-    if (err.name === "CastError") {
+    if (err.name === 'CastError') {
       return res.status(400).json({
         success: false,
-        message: "Invalid monitor ID",
+        message: 'Invalid monitor ID',
       });
     }
 
     return res.status(500).json({
       success: false,
-      message: "Internal Server Error",
+      message: 'Internal Server Error',
     });
   }
 };

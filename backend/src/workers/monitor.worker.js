@@ -1,7 +1,8 @@
 import { Worker } from "bullmq";
 import axios from "axios";
 import { redisConnection } from "../queues/queue.connection.js";
-import { createLog } from '../modules/logs/log.repository.js';
+import { MONITOR_QUEUE_NAME } from "../modules/monitor/monitor.queue.js";
+import { createLog } from "../modules/logs/log.repository.js";
 import Monitor from "../modules/monitor/monitor.model.js";
 import { setCache } from "../utils/cache.js";
 import { removeMonitorJob } from "../modules/monitor/monitor.scheduler.js";
@@ -9,20 +10,22 @@ import { handleFailure, handleSuccess } from "../modules/incident/incident.proce
 
 export const startBullWorker = () => {
   const worker = new Worker(
-    "monitor-queue",
+    MONITOR_QUEUE_NAME,
     async (job) => {
       const { monitorId, url, method } = job.data;
 
       // Self-healing check: Verify monitor exists in DB and is active
       const monitor = await Monitor.findById(monitorId);
+
       if (!monitor || !monitor.active) {
-        // console.log(`⚠️ Monitor ${monitorId} not found or inactive. Cleaning up queue job.`);
         await removeMonitorJob(monitorId);
+
         try {
           await job.remove();
         } catch (e) {
-          // ignore if already removed
+          // Ignore if already removed
         }
+
         return;
       }
 
@@ -89,7 +92,7 @@ export const startBullWorker = () => {
 
         console.log(`❌ Failed: ${url} - ${err.message}`);
 
-        // 🔥 FAILURE → INCIDENT COUNT
+        // FAILURE → INCIDENT COUNT
         await handleFailure(monitorId);
       }
     },
@@ -99,5 +102,7 @@ export const startBullWorker = () => {
     }
   );
 
-  console.log("🟢 BullMQ Worker started...");
+  console.log(`🟢 BullMQ Worker started: ${MONITOR_QUEUE_NAME}`);
+
+  return worker;
 };

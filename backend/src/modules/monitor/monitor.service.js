@@ -1,6 +1,14 @@
 import Monitor from './monitor.model.js';
-import { addMonitorJob, removeMonitorJob } from './monitor.scheduler.js';
+import {
+  addMonitorJob,
+  removeMonitorJob,
+} from './monitor.scheduler.js';
 import { invalidateDashboardCache } from '../dashboard/dashboard.cache.js';
+
+const monitorPopulate = {
+  path: 'monitoringTargets.region',
+  select: 'key name provider enabled workerQueue',
+};
 
 export const createMonitor = async payload => {
   const existingMonitor = await Monitor.findOne({
@@ -10,25 +18,30 @@ export const createMonitor = async payload => {
   });
 
   if (existingMonitor) {
-    throw new Error('A monitor with this URL and HTTP method already exists.');
+    throw new Error(
+      'A monitor with this URL and HTTP method already exists.'
+    );
   }
 
   const monitor = await Monitor.create(payload);
 
+  const populatedMonitor = await Monitor.findById(monitor._id).populate(
+    monitorPopulate
+  );
+
   await invalidateDashboardCache();
 
-  if (!monitor.active) return monitor;
+  if (!populatedMonitor.active) return populatedMonitor;
 
-  await addMonitorJob(monitor);
+  await addMonitorJob(populatedMonitor);
 
-  return monitor;
+  return populatedMonitor;
 };
 
 export const getActiveMonitors = async () => {
-  return await Monitor.find({ active: true });
+  return await Monitor.find({ active: true }).populate(monitorPopulate);
 };
 
-// 🔥 GET ALL
 export const getAllMonitors = async (
   userId,
   {
@@ -43,9 +56,10 @@ export const getAllMonitors = async (
 ) => {
   const filter = { userId };
 
-  // 🔎 SEARCH
   if (search.trim()) {
-    const escapedSearch = search.trim().replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    const escapedSearch = search
+      .trim()
+      .replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 
     filter.url = {
       $regex: escapedSearch,
@@ -53,20 +67,16 @@ export const getAllMonitors = async (
     };
   }
 
-  // 🔥 ACTIVE FILTER
   if (active !== undefined) {
     filter.active = active;
   }
 
-  // 🔥 HTTP METHOD FILTER
   if (method) {
     filter.method = method.toUpperCase();
   }
 
-  // 🔢 PAGINATION
   const skip = (page - 1) * limit;
 
-  // ↕️ SORTING
   const allowedSortFields = [
     'createdAt',
     'updatedAt',
@@ -83,6 +93,7 @@ export const getAllMonitors = async (
 
   const [monitors, total] = await Promise.all([
     Monitor.find(filter)
+      .populate(monitorPopulate)
       .sort({ [safeSortBy]: safeSortOrder })
       .skip(skip)
       .limit(limit),
@@ -99,32 +110,34 @@ export const getAllMonitors = async (
   };
 };
 
-// 🔥 GET BY ID
 export const getMonitorById = async (id, userId) => {
-  return await Monitor.findOne({ _id: id, userId });
+  return await Monitor.findOne({ _id: id, userId }).populate(
+    monitorPopulate
+  );
 };
 
-// ✅ ADMIN GET ALL
-// export const getAllMonitorsAdmin = async () => {
-//   return await Monitor.find().sort({ createdAt: -1 });
-// };
-
-// 🔥 UPDATE & RESCHEDULE
 export const updateMonitorById = async (id, userId, data) => {
-  const existingMonitor = await Monitor.findOne({ _id: id, userId });
+  const existingMonitor = await Monitor.findOne({
+    _id: id,
+    userId,
+  }).populate(monitorPopulate);
+
   if (!existingMonitor) return null;
 
-  // 1. Remove old job schedule
-  await removeMonitorJob(existingMonitor._id, existingMonitor.interval);
+  await removeMonitorJob(
+    existingMonitor,
+    existingMonitor.interval
+  );
 
-  // 2. Update monitor in database
   const updatedMonitor = await Monitor.findOneAndUpdate(
     { _id: id, userId },
     data,
-    { new: true }
-  );
+    {
+      new: true,
+      runValidators: true,
+    }
+  ).populate(monitorPopulate);
 
-  // 3. Reschedule job with new settings if monitor is active
   if (updatedMonitor && updatedMonitor.active) {
     await addMonitorJob(updatedMonitor);
   }
@@ -134,75 +147,61 @@ export const updateMonitorById = async (id, userId, data) => {
   return updatedMonitor;
 };
 
-// 🔥 DELETE
 export const deleteMonitorById = async (id, userId) => {
   const monitor = await Monitor.findOneAndDelete({
     _id: id,
     userId,
-  });
+  }).populate(monitorPopulate);
 
   if (!monitor) {
     return null;
   }
 
-  await removeMonitorJob(monitor._id, monitor.interval);
+  await removeMonitorJob(monitor, monitor.interval);
   await invalidateDashboardCache();
 
   return monitor;
 };
 
-const setMonitorStatus = async (id, userId, active) => {
-  return await Monitor.findOneAndUpdate(
-    { _id: id, userId },
-    { active },
-    { new: true }
-  );
-};
-
 export const pauseMonitor = async (id, userId) => {
-  const monitor = await Monitor.findOneAndUpdate(
-    {
-      _id: id,
-      userId,
-    },
-    {
-      active: false,
-    },
-    {
-      new: true,
-    }
-  );
+  const monitor = await Monitor.findOne({
+    _id: id,
+    userId,
+  }).populate(monitorPopulate);
 
-  if (monitor) {
-    await removeMonitorJob(monitor._id, monitor.interval);
-    await invalidateDashboardCache();
-  } else {
-    console.log("Monitor Not Found...");
+  if (!monitor) {
+    return null;
   }
+
+  await removeMonitorJob(monitor, monitor.interval);
+
+  monitor.active = false;
+  await monitor.save();
+
+  await invalidateDashboardCache();
 
   return monitor;
 };
 
 export const resumeMonitor = async (id, userId) => {
-  const monitor = await Monitor.findOneAndUpdate(
-    {
-      _id: id,
-      userId,
-    },
-    {
-      active: true,
-    },
-    {
-      new: true,
-    }
-  );
+  const monitor = await Monitor.findOne({
+    _id: id,
+    userId,
+  }).populate(monitorPopulate);
 
-  if (monitor) {
-    await addMonitorJob(monitor);
-    await invalidateDashboardCache();
-  } else {
-    console.log("Monitor Not Found...");
+  if (!monitor) {
+    return null;
   }
 
-  return monitor;
+  monitor.active = true;
+  await monitor.save();
+
+  const populatedMonitor = await Monitor.findById(monitor._id).populate(
+    monitorPopulate
+  );
+
+  await addMonitorJob(populatedMonitor);
+  await invalidateDashboardCache();
+
+  return populatedMonitor;
 };

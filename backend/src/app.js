@@ -9,6 +9,7 @@ import authRoutes from "./modules/auth/auth.routes.js";
 import incidentRoutes from "./modules/incident/incident.routes.js";
 import { apiRateLimiter } from "./middleware/rateLimiter.js";
 import adminRoutes from "./modules/admin/admin.routes.js";
+import monitoringRegionRoutes from "./modules/monitoring-region/monitoring-region.routes.js";
 
 const app = express();
 
@@ -52,6 +53,7 @@ app.use("/monitors", monitorRoutes);
 app.use("/dashboard", dashboardRoutes);
 app.use("/incidents", incidentRoutes);
 app.use("/admin", adminRoutes);
+app.use("/admin/monitoring-regions", monitoringRegionRoutes);
 
 // Health check endpoint
 app.get("/", (req, res) => {
