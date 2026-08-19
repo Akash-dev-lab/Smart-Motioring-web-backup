@@ -175,78 +175,52 @@ This backend powers a **real-time website monitoring platform** that:
 
 ```
 backend/
-├── server.js                      # Entry point
-├── package.json                   # Dependencies
-├── .env                          # Environment variables
-├── .gitignore                    # Git ignore rules
+├── src/
+│   ├── server.ts                    # Entry point (TypeScript)
+│   ├── app.ts                       # Express app configuration (TypeScript)
+│   │
+│   ├── config/                      # Configuration files
+│   │   └── db.ts                    # MongoDB connection (TypeScript)
+│   │
+│   ├── middleware/                  # Middleware
+│   │   └── rateLimiter.ts          # API rate limiting (TypeScript)
+│   │
+│   ├── modules/                     # Feature modules (all TypeScript)
+│   │   ├── auth/                    # JWT authentication
+│   │   ├── monitor/                 # Website monitoring + scheduler
+│   │   ├── logs/                    # Check logs & analytics
+│   │   ├── incident/                # Incident lifecycle management
+│   │   ├── ai/                      # Google Gemini AI integration
+│   │   ├── alert/                   # Alert triggering & email delivery
+│   │   ├── dashboard/               # Aggregated dashboard data
+│   │   ├── admin/                   # Admin-only stats
+│   │   └── monitoring-region/       # Regional monitoring configuration
+│   │
+│   ├── workers/                     # Background workers
+│   │   └── monitor.worker.ts       # BullMQ regional workers (TypeScript)
+│   │
+│   ├── sockets/                     # WebSocket / Socket.IO
+│   │   ├── socket.server.ts        # Socket.IO server initialization
+│   │   ├── socket.auth.ts          # Socket authentication middleware
+│   │   ├── socket.events.ts        # Socket event registration
+│   │   ├── socket.rooms.ts         # Socket room management
+│   │   └── socket.pubsub.ts        # Redis Pub/Sub for WebSocket events
+│   │
+│   ├── queues/                      # BullMQ configuration
+│   │   └── queue.connection.ts     # Shared Redis connection
+│   │
+│   ├── types/                       # Shared TypeScript type definitions
+│   │
+│   └── utils/                       # Utilities
+│       ├── cache.ts                # Redis caching utilities
+│       └── constants.ts            # Shared constants
 │
-└── src/
-    ├── app.js                    # Express app configuration
-    │
-    ├── config/                   # Configuration files
-    │   ├── db.js                # MongoDB connection
-    │   └── redis.js             # Redis connection
-    │
-    ├── modules/                  # Feature modules
-    │   │
-    │   ├── auth/                # Authentication
-    │   │   ├── auth.model.js   # User schema
-    │   │   ├── auth.service.js # Auth business logic
-    │   │   ├── auth.controller.js # Auth endpoints
-    │   │   ├── auth.routes.js  # Auth routes
-    │   │   └── auth.middleware.js # JWT verification
-    │   │
-    │   ├── monitor/             # Website monitoring
-    │   │   ├── monitor.model.js # Monitor schema
-    │   │   ├── monitor.service.js # Monitor CRUD
-    │   │   ├── monitor.controller.js # Monitor endpoints
-    │   │   ├── monitor.routes.js # Monitor routes
-    │   │   ├── monitor.scheduler.js # Scheduler (every 5s)
-    │   │   └── monitor.queue.js # BullMQ queue
-    │   │
-    │   ├── logs/                # Check logs
-    │   │   ├── log.model.js    # Log schema (TTL: 7 days)
-    │   │   ├── log.service.js  # Analytics aggregation
-    │   │   ├── log.controller.js # Log endpoints
-    │   │   └── log.routes.js   # Log routes
-    │   │
-    │   ├── incident/            # Incident management
-    │   │   ├── incident.model.js # Incident schema
-    │   │   ├── incident.service.js # Incident CRUD
-    │   │   ├── incident.processor.js # Failure tracking
-    │   │   └── incident.processor.ai.js # AI trigger
-    │   │
-    │   ├── ai/                  # AI integration
-    │   │   ├── ai.model.js     # AI insight schema
-    │   │   ├── ai.service.js   # Gemini API call
-    │   │   ├── ai.promptBuilder.js # Prompt generation
-    │   │   ├── ai.formatter.js # Response parsing
-    │   │   ├── ai.controller.js # AI endpoints
-    │   │   └── ai.routes.js    # AI routes
-    │   │
-    │   ├── alert/               # Alert system
-    │   │   ├── alert.model.js  # Alert schema
-    │   │   ├── alert.service.js # Alert logic
-    │   │   └── email.service.js # Nodemailer config
-    │   │
-    │   ├── dashboard/           # Dashboard APIs
-    │   │   ├── dashboard.controller.js # Summary, incidents, analytics
-    │   │   └── dashboard.routes.js # Dashboard routes
-    │   │
-    │   └── admin/               # Admin features
-    │       ├── admin.controller.js # Admin endpoints
-    │       ├── admin.routes.js # Admin routes
-    │       ├── admin.service.js # Admin logic
-    │       └── admin.stats.js  # System stats
-    │
-    ├── workers/                 # Background workers
-    │   └── monitor.worker.js   # BullMQ worker (HTTP checks)
-    │
-    └── utils/                   # Utilities
-        ├── constants.js        # App constants
-        ├── httpClient.js       # Axios wrapper
-        ├── logger.js           # Logging utility
-        └── time.js             # Time helpers
+├── dist/                            # Compiled JavaScript (production)
+├── scripts/                         # Test/utility scripts
+├── package.json                     # Dependencies & scripts
+├── tsconfig.json                    # TypeScript configuration
+├── .env                            # Environment variables (not committed)
+└── .env.example                    # Environment variable template
 ```
 
 ---
@@ -280,12 +254,18 @@ cp .env.example .env
 
 4. **Configure environment variables** (see below)
 
-5. **Start the server**
+5. **Development mode**
 ```bash
+npm run dev
+```
+
+6. **Production build**
+```bash
+npm run build
 npm start
 ```
 
-Server will run on `http://localhost:3000`
+Development server runs on `http://localhost:3000` (default)
 
 ---
 

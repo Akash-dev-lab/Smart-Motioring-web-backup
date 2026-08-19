@@ -8,69 +8,73 @@
 
 ```
 backend/
-├── server.js                         # Entry point — bootstraps app, DB, scheduler, worker
+├── src/
+│   ├── server.ts                     # Entry point — bootstraps app, DB, Socket.IO, workers
+│   ├── app.ts                        # Express app — middleware & route registration
+│   ├── config/
+│   │   └── db.ts                     # MongoDB connection
+│   ├── middleware/
+│   │   └── rateLimiter.ts            # API rate limiting
+│   ├── modules/
+│   │   ├── auth/                     # JWT authentication (TypeScript)
+│   │   ├── monitor/                  # URL monitors CRUD + scheduler (TypeScript)
+│   │   ├── alert/                    # Alert triggering & email delivery (TypeScript)
+│   │   ├── incident/                 # Incident lifecycle management (TypeScript)
+│   │   ├── logs/                     # Check logs & analytics (TypeScript)
+│   │   ├── ai/                       # Gemini AI integration (TypeScript)
+│   │   ├── dashboard/                # Aggregated dashboard data (TypeScript)
+│   │   ├── admin/                    # Admin-only stats (TypeScript)
+│   │   └── monitoring-region/        # Regional monitoring configuration (TypeScript)
+│   ├── queues/
+│   │   └── queue.connection.ts       # Shared Redis connection for BullMQ
+│   ├── workers/
+│   │   └── monitor.worker.ts         # BullMQ regional workers — performs HTTP checks
+│   ├── sockets/
+│   │   ├── socket.server.ts          # Socket.IO server initialization
+│   │   ├── socket.auth.ts            # Socket authentication middleware
+│   │   ├── socket.events.ts          # Socket event registration
+│   │   ├── socket.rooms.ts           # Socket room management
+│   │   └── socket.pubsub.ts          # Redis Pub/Sub for WebSocket events
+│   ├── types/                        # Shared TypeScript type definitions
+│   └── utils/
+│       ├── cache.ts                  # Redis caching utilities
+│       └── constants.ts              # Shared constants
+├── dist/                             # Compiled JavaScript (production)
+├── scripts/                          # Test/utility scripts
 ├── package.json                      # Dependencies & scripts
+├── tsconfig.json                     # TypeScript configuration
 ├── .env                              # Environment variables (not committed)
-├── .prettierrc.json                  # Prettier config
-├── ARCHITECTURE.md                   # High-level architecture notes
-└── src/
-    ├── app.js                        # Express app — middleware & route registration
-    ├── config/
-    │   ├── db.js                     # MongoDB connection
-    │   ├── redis.js                  # Redis (IORedis) connection
-    │   └── env.js                    # Env variable helpers
-    ├── modules/
-    │   ├── auth/                     # JWT authentication
-    │   ├── monitor/                  # URL monitors CRUD + scheduler
-    │   ├── alert/                    # Alert triggering & email delivery
-    │   ├── incident/                 # Incident lifecycle management
-    │   ├── logs/                     # Check logs & analytics
-    │   ├── ai/                       # Gemini AI integration
-    │   ├── dashboard/                # Aggregated dashboard data
-    │   ├── admin/                    # Admin-only stats
-    │   └── notification/             # (Planned) notification delivery
-    ├── queues/
-    │   ├── monitor.queue.js          # BullMQ monitor check queue
-    │   ├── alert.queue.js            # BullMQ alert queue
-    │   └── queue.connection.js       # Shared BullMQ connection
-    ├── workers/
-    │   ├── monitor.worker.js         # BullMQ worker — performs HTTP checks
-    │   ├── alert.worker.js           # BullMQ worker — sends alerts
-    │   └── ai.worker.js              # BullMQ worker — AI analysis
-    ├── sockets/
-    │   └── socket.js                 # WebSocket / Socket.IO setup
-    └── utils/
-        ├── constants.js              # Shared constants
-        ├── httpClient.js             # Axios wrapper
-        ├── logger.js                 # Logging utility
-        └── time.js                   # Time helpers
+└── .env.example                      # Environment variable template
 ```
 
 ---
 
-## 🚀 Entry Point — `server.js`
+## 🚀 Entry Point — `src/server.ts`
 
 The application bootstraps in the following order:
 
 1. Load environment variables via `dotenv/config`
-2. Connect to **MongoDB** (`connectDB`)
-3. Start the **Scheduler** (`startScheduler`) — polls active monitors every 5 seconds
-4. Start the **BullMQ Worker** (`startBullWorker`) — processes queued HTTP checks
-5. Start **Express** server on `process.env.PORT`
+2. Configure DNS servers to Cloudflare (`1.1.1.1`) and Google (`8.8.8.8`)
+3. Connect to **MongoDB** (`connectDB`)
+4. Create HTTP server with Express app
+5. Initialize **Socket.IO** server (`initializeSocketServer`)
+6. Start **Regional BullMQ Workers** (`startBullWorker`) — processes queued HTTP checks
+7. Start **Express** server on `process.env.PORT` (default: 3000)
+8. Initialize **Socket Pub/Sub** (`initializeSocketPubSub`) — Redis subscriber for real-time WebSocket events
 
-DNS servers are explicitly set to Cloudflare (`1.1.1.1`) and Google (`8.8.8.8`) for reliable outbound lookups.
-
-```js
+```typescript
 dns.setServers(["1.1.1.1", "8.8.8.8"]);
-connectDB();
-startScheduler();
+await connectDB();
+const httpServer = http.createServer(app);
+initializeSocketServer(httpServer);
 startBullWorker();
-app.listen(process.env.PORT, ...);
+httpServer.listen(process.env.PORT);
+await initializeSocketPubSub();
 ```
 
 ---
 
-## ⚙️ Express App — `src/app.js`
+## ⚙️ Express App — `src/app.ts`
 
 ### Middleware Stack
 
@@ -89,14 +93,16 @@ app.listen(process.env.PORT, ...);
 
 ### Route Registration
 
-| Prefix        | Module Router         |
-|---------------|-----------------------|
-| `/auth`       | `auth.routes.js`      |
-| `/logs`       | `log.routes.js`       |
-| `/ai`         | `ai.routes.js`        |
-| `/monitors`   | `monitor.routes.js`   |
-| `/dashboard`  | `dashboard.routes.js` |
-| `/incidents`  | `incident.routes.js`  |
+| Prefix        | Module Router                  |
+|---------------|--------------------------------|
+| `/auth`       | `auth.routes.ts`               |
+| `/logs`       | `log.routes.ts`                |
+| `/ai`         | `ai.routes.ts`                 |
+| `/monitors`   | `monitor.routes.ts`            |
+| `/dashboard`  | `dashboard.routes.ts`          |
+| `/incidents`  | `incident.routes.ts`           |
+| `/admin`      | `admin.routes.ts`              |
+| `/admin/monitoring-regions` | `monitoring-region.routes.ts` |
 
 ### Special Endpoints
 

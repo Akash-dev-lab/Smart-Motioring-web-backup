@@ -2,10 +2,13 @@
   "name": "backend",
   "version": "1.0.0",
   "description": "",
-  "main": "server.js",
+  "main": "src/server.ts",
   "type": "module",
   "scripts": {
-    "start": "nodemon server.js"
+    "dev": "tsx watch src/server.ts",
+    "build": "tsc",
+    "typecheck": "tsc --noEmit",
+    "start": "node dist/server.js"
   },
   "keywords": [],
   "author": "",
@@ -24,5 +27,16 @@
     "nodemailer": "^8.0.7",
     "nodemon": "^3.1.14",
     "socket.io": "^4.8.3"
+  },
+  "devDependencies": {
+    "@types/bcryptjs": "^3.0.0",
+    "@types/cookie-parser": "^1.4.9",
+    "@types/cors": "^2.8.19",
+    "@types/express": "^5.0.6",
+    "@types/jsonwebtoken": "^9.0.10",
+    "@types/node": "^22.19.14",
+    "@types/nodemailer": "^8.0.1",
+    "tsx": "^4.21.0",
+    "typescript": "^5.9.3"
   }
 }
