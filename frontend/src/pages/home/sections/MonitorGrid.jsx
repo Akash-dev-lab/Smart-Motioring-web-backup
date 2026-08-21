@@ -4,12 +4,27 @@ import { monitorItems } from '../content';
 
 const MonitorGrid = () => {
   return (
-    <section id="features" className="relative min-h-[780px] w-full overflow-hidden bg-[#1E6BFF] font-mono bg-grain sm:h-screen sm:h-[100svh] sm:min-h-0">
+    <section id="features" className="relative min-h-[780px] w-full overflow-hidden bg-[#111317] font-mono bg-grain sm:h-screen sm:h-[100svh] sm:min-h-0">
+      {/* Grid Background */}
+      <div 
+        className="absolute inset-0 z-10 pointer-events-none"
+        style={{
+          backgroundImage: 'linear-gradient(to right, rgba(255,255,255,0.03) 1px, transparent 1px), linear-gradient(to bottom, rgba(255,255,255,0.03) 1px, transparent 1px)',
+          backgroundSize: '40px 40px'
+        }}
+      />
+      
+      {/* Whitish Glow Effect in Middle */}
+      <div className="absolute inset-0 z-2 pointer-events-none">
+        <div className="absolute w-full h-full bg-white/20 blur-[300px]"></div>
+        <div className="absolute bottom-1/4 left-1/4 w-1/3 h-1/3 bg-white/5 rounded-full blur-[100px]"></div>
+      </div>
+      
       <TechnicalBackground />
 
       {/* 1. SCALED WATERMARK - Responsive scale */}
       <div className="absolute inset-0 flex items-center justify-center pointer-events-none select-none opacity-[0.14] z-0">
-        <h2 className="text-[clamp(7rem,32vw,28rem)] font-black italic text-black leading-none tracking-normal sm:tracking-tighter uppercase">
+        <h2 className="text-[clamp(7rem,32vw,28rem)] font-black italic text-slate-600 leading-none tracking-normal sm:tracking-tighter uppercase">
           CORE
         </h2>
       </div>
