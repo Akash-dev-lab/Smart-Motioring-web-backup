@@ -73,3 +73,19 @@ body {
   background: linear-gradient(90deg, transparent, rgba(0,0,0,0.3), transparent);
   animation: scan 2s linear infinite;
 }
+
+/* Scroll animation for activity feed */
+@keyframes scroll {
+  0% { transform: translateY(0); }
+  100% { transform: translateY(-50%); }
+}
+
+.animate-scroll {
+  animation: scroll 15s linear infinite;
+}
+
+/* Mask image for bottom fade effect */
+.mask-image-bottom {
+  -webkit-mask-image: linear-gradient(to bottom, black 50%, transparent 100%);
+  mask-image: linear-gradient(to bottom, black 50%, transparent 100%);
+}
