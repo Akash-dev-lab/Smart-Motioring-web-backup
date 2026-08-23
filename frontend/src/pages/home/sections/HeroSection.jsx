@@ -266,7 +266,7 @@ const HeroSection = () => {
           {/* Left Column: Copy */}
           <div className="flex flex-col items-start space-y-8">
             <div className="flex items-center gap-2 rounded-full border border-[#3b4a3d] bg-[#1a1c1f] px-3 py-1">
-              <span className="h-2 w-2 animate-pulse rounded-full bg-[#d0bcff]"></span>
+              <span className="h-2 w-2 animate-pulse rounded-full bg-[#ffe0bc]"></span>
               <span
                 className="text-xs font-medium uppercase tracking-[0.05em] text-[#bacbb9]"
                 style={{

@@ -89,3 +89,52 @@ body {
   -webkit-mask-image: linear-gradient(to bottom, black 50%, transparent 100%);
   mask-image: linear-gradient(to bottom, black 50%, transparent 100%);
 }
+
+/* Window bar styling for new cards */
+.window-bar {
+  background-color: #14171C;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+/* Progress bar background styling */
+.progress-bar-bg {
+  background-color: #1a1c1f;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Hardware card styling */
+.hardware-card {
+  background-color: #0C0E12;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  transition: all 0.3s ease;
+}
+
+.hardware-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+}
+
+
+/* Float animation for telemetry clouds */
+@keyframes float {
+  0%, 100% { 
+    transform: translateY(0); 
+  }
+  50% { 
+    transform: translateY(-10px); 
+  }
+}
+
+.animate-float {
+  animation: float 6s ease-in-out infinite;
+}
+
+/* Telemetry cloud styles */
+.telemetry-cloud {
+  transition: transform 0.3s ease, border-color 0.3s ease;
+}
+
+.telemetry-cloud:hover {
+  border-color: rgba(117, 255, 158, 0.5) !important;
+  transform: translateY(-2px);
+}

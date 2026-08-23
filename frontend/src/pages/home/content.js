@@ -18,8 +18,8 @@ export const monitorItems = [
     detail: 'Measure response times and detect slowdowns instantly.',
     x: '63%',
     y: '14%',
-    size: { w: 'clamp(165px, 17vw, 200px)', h: 'clamp(140px, 15vw, 170px)' },
-    mobile: { w: '36vw', h: '126px', x: '57%', y: '18%' },
+    size: { w: 'clamp(200px, 20vw, 280px)', h: 'clamp(180px, 20vw, 220px)' },
+    mobile: { w: '40vw', h: '160px', x: '57%', y: '18%' },
   },
   {
     id: 3,

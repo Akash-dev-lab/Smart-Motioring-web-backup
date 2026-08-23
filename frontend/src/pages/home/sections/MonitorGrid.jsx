@@ -1,8 +1,46 @@
-import MonitorCard from "./MonitorCard";
+import { useEffect } from "react";
 import TechnicalBackground from "./TechnicalBackground";
-import { monitorItems } from "../content";
 
 const MonitorGrid = () => {
+  useEffect(() => {
+    const section = document.getElementById('features');
+    const bot = document.getElementById('monitoring-agent');
+    
+    if (!section || !bot) return;
+
+    const handleMouseMove = (e) => {
+      const sectionRect = section.getBoundingClientRect();
+      
+      // Calculate mouse position relative to section center
+      const mouseX = e.clientX - sectionRect.left;
+      const mouseY = e.clientY - sectionRect.top;
+      const centerX = sectionRect.width / 2;
+      const centerY = sectionRect.height / 2;
+      
+      // Calculate offset (magnetic effect with dampening)
+      const xOffset = (mouseX - centerX) / 50;
+      const yOffset = (mouseY - centerY) / 50;
+      
+      // Apply smooth transform
+      bot.style.transition = 'transform 0.1s ease-out';
+      bot.style.transform = `translate(calc(-50% + ${xOffset}px), calc(-50% + ${yOffset}px))`;
+    };
+
+    const handleMouseLeave = () => {
+      // Reset to center when mouse leaves
+      bot.style.transition = 'transform 0.3s ease-out';
+      bot.style.transform = 'translate(-50%, -50%)';
+    };
+
+    section.addEventListener('mousemove', handleMouseMove);
+    section.addEventListener('mouseleave', handleMouseLeave);
+
+    return () => {
+      section.removeEventListener('mousemove', handleMouseMove);
+      section.removeEventListener('mouseleave', handleMouseLeave);
+    };
+  }, []);
+
   return (
     <section
       id="features"
@@ -57,30 +95,21 @@ const MonitorGrid = () => {
       </div>
 
       {/* Description Paragraph */}
-      <div className="absolute top-[7%] sm:top-[10%] left-[50%] -translate-x-1/2 z-200 w-full max-w-2xl px-4">
+      {/* <div className="absolute top-[7%] sm:top-[10%] left-[50%] -translate-x-1/2 z-200 w-full max-w-2xl px-4">
         <p className="font-body-lg text-center text-white text-body-lg text-on-surface-variant max-w-2xl mx-auto">
           Real-time telemetry and status across all critical infrastructure
           layers. High-density signals prioritize active incidents and anomalous
           latency.
         </p>
-      </div>
-
-      {/* 3. POOP ICON - Scaled for mobile */}
-      <div className="absolute top-[20%] left-[10%] md:left-[16%] z-10 opacity-90 scale-75 md:scale-100 hidden sm:block">
-        <div className="w-12 h-10 bg-black rounded-t-full relative">
-          <div className="absolute top-3 left-2 w-2.5 h-2.5 bg-white rounded-full animate-pulse"></div>
-          <div className="absolute top-3 right-2 w-2.5 h-2.5 bg-white rounded-full animate-pulse delay-75"></div>
-        </div>
-        <div className="w-16 h-3 bg-black rounded-b-lg -mt-1"></div>
-      </div>
+      </div> */}
 
       {/* 4. ASYMMETRIC FOLDER - Pinned to right gutter */}
-      {/* <div className="absolute top-[35%] md:top-[40%] right-[3%] md:right-[5%] z-10 w-20 h-14 md:w-24 md:h-16 pointer-events-none hidden sm:block">
+      <div className="absolute top-[35%] md:top-[40%] right-[3%] md:right-[5%] z-10 w-20 h-14 md:w-24 md:h-16 pointer-events-none hidden sm:block">
         <div className="absolute -top-3 left-0 w-8 h-3 md:w-10 md:h-4 bg-black border-[2px] border-black rounded-t-sm"></div>
         <div className="absolute inset-0 bg-white border-[3px] border-black shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] flex items-center justify-center">
            <span className="font-black italic text-[7px] md:text-[8px] uppercase tracking-tighter opacity-40">DATA_FS</span>
         </div>
-      </div> */}
+      </div>
 
       {/* 5. CLUSTERED DOTS - Distributed across screen gutters */}
       {[
@@ -99,10 +128,10 @@ const MonitorGrid = () => {
       ))}
 
       {/* 6. CREDIT CARD - Left side anchor */}
-      {/* <div className="absolute bottom-[18%] left-[5%] md:left-[10%] z-10 w-16 h-10 md:w-20 md:h-12 bg-white border-[3px] border-black shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] p-2 hidden sm:block">
+      <div className="absolute bottom-[18%] left-[5%] md:left-[10%] z-10 w-16 h-10 md:w-20 md:h-12 bg-white border-[3px] border-black shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] p-2 hidden sm:block">
         <div className="w-8 md:w-10 h-1.5 md:h-2 bg-black mb-2"></div>
         <div className="w-4 md:w-6 h-1 bg-black opacity-20"></div>
-      </div> */}
+      </div>
 
       {/* 7. CURSOR ICON - Anchored bottom right */}
       <div className="absolute bottom-[5%] sm:bottom-[8%] right-[4%] md:right-[8%] z-50 rotate-[-15deg] scale-75 md:scale-100">
@@ -119,13 +148,190 @@ const MonitorGrid = () => {
         </svg>
       </div>
 
-      <div
-        id="playground"
-        className="absolute top-[21%] left-0 right-0 bottom-0 z-20 grid w-full grid-cols-2 content-start gap-3 pl-4 pr-6 pb-4 pt-8 sm:block sm:p-6"
-      >
-        {monitorItems.map((feature) => (
-          <MonitorCard key={feature.id} feature={feature} />
-        ))}
+      {/* Interactive Canvas Area with Bot and Telemetry Clouds */}
+      <div id="playground" className="relative w-full max-w-6xl h-[600px] mx-auto mt-24 z-20">
+        {/* SVG Connectors */}
+        <svg className="absolute inset-0 w-full h-full pointer-events-none z-0" id="connector-svg" style={{ filter: 'drop-shadow(0 0 2px rgba(117,255,158,0.2))' }}>
+          {/* Lines will be dynamically updated */}
+        </svg>
+
+        {/* Center Character (Agent Bot) */}
+        <div 
+          className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[100px] h-[100px] bg-[#0A0E17] rounded-full border-2 border-white/5 shadow-[inset_0_4px_12px_rgba(255,255,255,0.1),_0_8px_32px_rgba(0,0,0,0.5)] flex items-center justify-center z-30 relative"
+          id="monitoring-agent"
+          style={{ backdropFilter: 'blur(8px)' }}
+        >
+          {/* Pulse Ring Effect */}
+          <div className="absolute inset-0 bg-[#75ff9e]/20 rounded-full animate-ping opacity-75"></div>
+          
+          {/* Face/Eyes */}
+          <div className="flex gap-4 items-center relative z-10">
+            <div className="w-4 h-2 bg-[#75ff9e] rounded-full shadow-[0_0_8px_#75ff9e]"></div>
+            <div className="w-4 h-2 bg-[#75ff9e] rounded-full shadow-[0_0_8px_#75ff9e]"></div>
+          </div>
+          
+          {/* Status LED */}
+          <div className="absolute top-2 right-2 w-1.5 h-1.5 bg-[#75ff9e] rounded-full shadow-[0_0_6px_#75ff9e] animate-pulse"></div>
+        </div>
+
+        {/* Telemetry Clouds */}
+        {/* 1. UPTIME - Top Left */}
+        <div 
+          className="telemetry-cloud absolute top-[10%] left-[15%] w-64 animate-float"
+          style={{ 
+            animation: 'float 6s ease-in-out infinite',
+            animationDelay: '0s',
+            background: 'rgba(7, 19, 38, 0.55)',
+            border: '1px solid rgba(90, 120, 170, 0.35)',
+            backdropFilter: 'blur(12px)',
+            borderRadius: '40px',
+            padding: '16px 24px',
+            boxShadow: '0 8px 32px rgba(0, 0, 0, 0.2)',
+          }}
+        >
+          <div className="flex items-center gap-3 mb-1">
+            <svg className="w-4 h-4 text-[#75ff9e]" fill="currentColor" viewBox="0 0 20 20">
+              <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clipRule="evenodd" />
+            </svg>
+            <span className="font-['Geist'] text-[11px] text-[#e2e2e6] uppercase tracking-wider font-semibold">Uptime Monitoring</span>
+          </div>
+          <div className="font-['JetBrains_Mono'] text-[13px] text-[#75ff9e] flex items-center justify-between">
+            <span>99.98% SLA</span>
+            <div className="w-2 h-2 bg-[#75ff9e] rounded-full"></div>
+          </div>
+        </div>
+
+        {/* 2. ALERTS - Top Right */}
+        <div 
+          className="telemetry-cloud absolute top-[25%] right-[10%] w-72 animate-float"
+          style={{ 
+            animation: 'float 6s ease-in-out infinite',
+            animationDelay: '1s',
+            background: 'rgba(7, 19, 38, 0.55)',
+            border: '1px solid rgba(90, 120, 170, 0.35)',
+            backdropFilter: 'blur(12px)',
+            borderRadius: '40px',
+            padding: '16px 24px',
+            boxShadow: '0 8px 32px rgba(0, 0, 0, 0.2)',
+          }}
+        >
+          <div className="flex items-center gap-3 mb-1">
+            <svg className="w-4 h-4 text-[#ffb4ab]" fill="currentColor" viewBox="0 0 20 20">
+              <path fillRule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+            </svg>
+            <span className="font-['Geist'] text-[11px] text-[#e2e2e6] uppercase tracking-wider font-semibold">Real-Time Alerts</span>
+          </div>
+          <div className="font-['JetBrains_Mono'] text-[13px] text-[#ffb4ab] flex items-center justify-between">
+            <span>2 Incidents Detected</span>
+            <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+              <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+            </svg>
+          </div>
+        </div>
+
+        {/* 3. MULTI-REGION - Bottom Left */}
+        <div 
+          className="telemetry-cloud absolute bottom-[15%] left-[10%] w-72 animate-float"
+          style={{ 
+            animation: 'float 6s ease-in-out infinite',
+            animationDelay: '2s',
+            background: 'rgba(7, 19, 38, 0.55)',
+            border: '1px solid rgba(90, 120, 170, 0.35)',
+            backdropFilter: 'blur(12px)',
+            borderRadius: '40px',
+            padding: '16px 24px',
+            boxShadow: '0 8px 32px rgba(0, 0, 0, 0.2)',
+          }}
+        >
+          <div className="flex items-center gap-3 mb-1">
+            <svg className="w-4 h-4 text-[#bacbb9]" fill="currentColor" viewBox="0 0 20 20">
+              <path fillRule="evenodd" d="M4.083 9h1.946c.089-1.546.383-2.97.837-4.118A6.004 6.004 0 004.083 9zM10 2a8 8 0 100 16 8 8 0 000-16zm0 2c-.076 0-.232.032-.465.262-.238.234-.497.623-.737 1.182-.389.907-.673 2.142-.766 3.556h3.936c-.093-1.414-.377-2.649-.766-3.556-.24-.56-.5-.948-.737-1.182C10.232 4.032 10.076 4 10 4zm3.971 5c-.089-1.546-.383-2.97-.837-4.118A6.004 6.004 0 0115.917 9h-1.946zm-2.003 2H8.032c.093 1.414.377 2.649.766 3.556.24.56.5.948.737 1.182.233.23.389.262.465.262.076 0 .232-.032.465-.262.238-.234.498-.623.737-1.182.389-.907.673-2.142.766-3.556zm1.166 4.118c.454-1.147.748-2.572.837-4.118h1.946a6.004 6.004 0 01-2.783 4.118zm-6.268 0C6.412 13.97 6.118 12.546 6.03 11H4.083a6.004 6.004 0 002.783 4.118z" clipRule="evenodd" />
+            </svg>
+            <span className="font-['Geist'] text-[11px] text-[#e2e2e6] uppercase tracking-wider font-semibold">Multi-Region Checks</span>
+          </div>
+          <div className="font-['JetBrains_Mono'] text-[13px] text-[#bacbb9]">
+            US-EAST · EU-WEST · AP-SOUTH
+          </div>
+        </div>
+
+        {/* 4. LATENCY - Bottom Right */}
+        <div 
+          className="telemetry-cloud absolute bottom-[25%] right-[15%] w-64 animate-float"
+          style={{ 
+            animation: 'float 6s ease-in-out infinite',
+            animationDelay: '0.5s',
+            background: 'rgba(7, 19, 38, 0.55)',
+            border: '1px solid rgba(90, 120, 170, 0.35)',
+            backdropFilter: 'blur(12px)',
+            borderRadius: '40px',
+            padding: '16px 24px',
+            boxShadow: '0 8px 32px rgba(0, 0, 0, 0.2)',
+          }}
+        >
+          <div className="flex items-center gap-3 mb-1">
+            <svg className="w-4 h-4 text-[#d0bcff]" fill="currentColor" viewBox="0 0 20 20">
+              <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clipRule="evenodd" />
+            </svg>
+            <span className="font-['Geist'] text-[11px] text-[#e2e2e6] uppercase tracking-wider font-semibold">Latency</span>
+          </div>
+          <div className="flex flex-col gap-1">
+            <div className="font-['JetBrains_Mono'] text-[13px] text-[#d0bcff]">142ms Average</div>
+            <div className="w-full h-1 bg-[#333538] rounded-full overflow-hidden">
+              <div className="h-full bg-[#d0bcff] w-[60%]"></div>
+            </div>
+          </div>
+        </div>
+
+        {/* 5. AI INCIDENT - Middle Left (hidden on mobile) */}
+        <div 
+          className="telemetry-cloud absolute top-[40%] left-[2%] w-72 animate-float hidden md:block"
+          style={{ 
+            animation: 'float 6s ease-in-out infinite',
+            animationDelay: '1.5s',
+            background: 'rgba(7, 19, 38, 0.55)',
+            border: '1px solid rgba(90, 120, 170, 0.35)',
+            backdropFilter: 'blur(12px)',
+            borderRadius: '40px',
+            padding: '16px 24px',
+            boxShadow: '0 8px 32px rgba(0, 0, 0, 0.2)',
+          }}
+        >
+          <div className="flex items-center gap-3 mb-1">
+            <svg className="w-4 h-4 text-[#c4abff]" fill="currentColor" viewBox="0 0 20 20">
+              <path d="M9 2a1 1 0 000 2h2a1 1 0 100-2H9z" />
+              <path fillRule="evenodd" d="M4 5a2 2 0 012-2 3 3 0 003 3h2a3 3 0 003-3 2 2 0 012 2v11a2 2 0 01-2 2H6a2 2 0 01-2-2V5zm9.707 5.707a1 1 0 00-1.414-1.414L9 12.586l-1.293-1.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+            </svg>
+            <span className="font-['Geist'] text-[11px] text-[#e2e2e6] uppercase tracking-wider font-semibold">AI Analysis</span>
+          </div>
+          <div className="font-['JetBrains_Mono'] text-[13px] text-[#c4abff]">
+            Root cause identified in DB-04
+          </div>
+        </div>
+
+        {/* 6. LOGS - Bottom Center (hidden on mobile) */}
+        <div 
+          className="telemetry-cloud absolute bottom-[5%] right-[30%] w-64 animate-float hidden md:block"
+          style={{ 
+            animation: 'float 6s ease-in-out infinite',
+            animationDelay: '2.5s',
+            background: 'rgba(7, 19, 38, 0.55)',
+            border: '1px solid rgba(90, 120, 170, 0.35)',
+            backdropFilter: 'blur(12px)',
+            borderRadius: '40px',
+            padding: '16px 24px',
+            boxShadow: '0 8px 32px rgba(0, 0, 0, 0.2)',
+          }}
+        >
+          <div className="flex items-center gap-3 mb-1">
+            <svg className="w-4 h-4 text-[#bacbb9]" fill="currentColor" viewBox="0 0 20 20">
+              <path fillRule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4z" clipRule="evenodd" />
+            </svg>
+            <span className="font-['Geist'] text-[11px] text-[#e2e2e6] uppercase tracking-wider font-semibold">Dashboards & Logs</span>
+          </div>
+          <div className="font-['JetBrains_Mono'] text-[13px] text-[#bacbb9]">
+            1,284 checks / hour
+          </div>
+        </div>
       </div>
     </section>
   );
