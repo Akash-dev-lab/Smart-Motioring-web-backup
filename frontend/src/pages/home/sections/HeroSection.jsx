@@ -333,9 +333,9 @@ const HeroSection = () => {
     rounded-[18px]
     border border-transparent
     bg-transparent
-    shadow-[0_0_35px_rgba(45,90,160,0.12)]
+    shadow-[0_0_35px_rgba(74,225,118,0.12)]
     transition-all duration-500
-    hover:shadow-[0_0_55px_rgba(100,90,220,0.20)]
+    hover:shadow-[0_0_55px_rgba(117,255,158,0.20)]
   "
           >
             <div
