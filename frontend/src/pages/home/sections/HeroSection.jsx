@@ -1,3 +1,4 @@
+import { useEffect, useRef, useState } from "react";
 import { ArrowRight, LogIn, UserPlus } from "lucide-react";
 import TechnicalBackground from "./TechnicalBackground";
 
@@ -8,9 +9,31 @@ const navItems = [
 ];
 
 const HeroSection = () => {
+  const [isScrolled, setIsScrolled] = useState(false);
+  const navbarRef = useRef(null);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      // Check if user has scrolled more than 50px
+      if (window.scrollY > 50) {
+        setIsScrolled(true);
+      } else {
+        setIsScrolled(false);
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+    };
+  }, []);
+
   return (
     <section
       className="bg-grain relative flex min-h-[720px] w-full flex-col items-center overflow-hidden bg-[#111317] px-3 pb-10 pt-[4.75rem] font-mono sm:min-h-[112svh] sm:px-5 sm:pb-14 sm:pt-[6rem] lg:pt-[6.25rem] max-[380px]:px-2"
+      data-scroll
+      data-scroll-speed="0.5"
     >
       {/* Grid Background */}
       <div 
@@ -19,24 +42,42 @@ const HeroSection = () => {
           backgroundImage: 'linear-gradient(to right, rgba(255,255,255,0.03) 1px, transparent 1px), linear-gradient(to bottom, rgba(255,255,255,0.03) 1px, transparent 1px)',
           backgroundSize: '40px 40px'
         }}
+        data-scroll
+        data-scroll-speed="0.2"
       />
       
       {/* Whitish Glow Effect in Middle */}
-      <div className="absolute inset-0 z-2 pointer-events-none">
+      <div 
+        className="absolute inset-0 z-2 pointer-events-none"
+        data-scroll
+        data-scroll-speed="0.1"
+      >
         <div className="absolute w-full h-full bg-white/20 blur-[300px]"></div>
         <div className="absolute bottom-1/4 left-1/4 w-1/3 h-1/3 bg-white/5 rounded-full blur-[100px]"></div>
       </div>
       
-      <TechnicalBackground />
+      <div
+        data-scroll
+        data-scroll-speed="0.2"
+      >
+        <TechnicalBackground />
+      </div>
 
       <div
         className="pointer-events-none absolute inset-0 z-3 opacity-[0.11] mix-blend-multiply"
         style={{ backgroundColor: "#cbc3d7" }}
+        data-scroll
+        data-scroll-speed="0.3"
       >
         <div className="absolute left-1/2 top-1/2 h-[74vmin] w-[74vmin] -translate-x-1/2 -translate-y-1/2 rounded-full border-[3.5rem] border-black" />
       </div>
 
-      <header className="absolute left-0 top-0 z-30 w-full px-2.5 py-2.5 sm:px-5 sm:py-3 lg:px-8">
+      <header 
+        ref={navbarRef}
+        className={`absolute left-0 top-0 z-30 w-full px-2.5 py-2.5 sm:px-5 sm:py-3 lg:px-8 transition-all duration-500 ${
+          isScrolled ? 'navbar-scrolled' : ''
+        }`}
+      >
   <div
     className="
       mx-auto grid max-w-7xl
@@ -261,7 +302,11 @@ const HeroSection = () => {
 </header>
 
       {/* Main Hero Content - Two Column Layout */}
-      <main className="relative z-10 mx-auto flex w-full max-w-7xl flex-grow items-center justify-center px-6 py-10">
+      <main 
+        className="relative z-10 mx-auto flex w-full max-w-7xl flex-grow items-center justify-center px-6 py-10"
+        data-scroll
+        data-scroll-speed="0.6"
+      >
         <div className="grid w-full grid-cols-1 items-center gap-16 lg:grid-cols-2">
           {/* Left Column: Copy */}
           <div className="flex flex-col items-start space-y-8">
@@ -337,6 +382,8 @@ const HeroSection = () => {
     transition-all duration-500
     hover:shadow-[0_0_55px_rgba(117,255,158,0.20)]
   "
+            data-scroll
+            data-scroll-speed="0.7"
           >
             <div
               className="

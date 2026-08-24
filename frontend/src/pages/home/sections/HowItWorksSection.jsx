@@ -2,6 +2,7 @@ import { useLayoutEffect, useRef } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import HowItWorksStep from './HowItWorksStep';
+import TechnicalBackground from './TechnicalBackground';
 import { howItWorksContent } from '../content';
 
 gsap.registerPlugin(ScrollTrigger);
@@ -93,40 +94,46 @@ const HowItWorksSection = ({ className = '' }) => {
     <section 
       id="how-it-works"
       ref={sectionRef} 
-      className={`relative z-100 min-h-screen w-screen max-w-full bg-[#00E676] border-t-[6px] border-black font-mono overflow-hidden ${className}`}
-    style={{
-      /* This polygon creates the sharp caution-strip angle that sits OVER the next section */
-    
-    }}
+      className={`relative z-100 min-h-screen w-screen max-w-full bg-[#111317] font-mono bg-grain overflow-hidden ${className}`}
     >
+      {/* Grid Background */}
+      <div 
+        className="absolute inset-0 z-10 pointer-events-none"
+        style={{
+          backgroundImage: 'linear-gradient(to right, rgba(255,255,255,0.03) 1px, transparent 1px), linear-gradient(to bottom, rgba(255,255,255,0.03) 1px, transparent 1px)',
+          backgroundSize: '40px 40px'
+        }}
+      />
+      
+      {/* Whitish Glow Effect in Middle */}
+      <div className="absolute inset-0 z-2 pointer-events-none">
+        <div className="absolute w-full h-full bg-white/20 blur-[300px]"></div>
+        <div className="absolute bottom-1/4 left-1/4 w-1/3 h-1/3 bg-white/5 rounded-full blur-[100px]"></div>
+      </div>
+
+      <TechnicalBackground />
+
+      {/* SCALED WATERMARK */}
+      <div className="absolute inset-0 flex items-center justify-center pointer-events-none select-none opacity-[0.14] z-0">
+        <h2 className="text-[clamp(7rem,32vw,28rem)] font-black italic text-slate-600 leading-none tracking-normal sm:tracking-tighter uppercase">
+          FLOW
+        </h2>
+      </div>
+
       <div className="sticky top-0 h-screen h-[100svh] overflow-hidden">
         
-        {/* BACKGROUND DECOR */}
-        <div className="absolute inset-0 pointer-events-none opacity-25">
-          <svg className="h-full w-full" viewBox="0 0 1200 900" preserveAspectRatio="none">
-            <g stroke="black" strokeWidth="3" fill="none">
-              <path d="M 0 170 H 380 V 370 H 840 V 120 H 1200" />
-              <path d="M 110 900 V 620 H 520 V 760 H 1200" />
-              <path d="M 260 0 V 250 H 710 V 900" />
-            </g>
-          </svg>
-        </div>
-
+        {/* Connector dots */}
         {connectorDots.map((style, index) => (
-          <div key={index} className="absolute h-2.5 w-2.5 rounded-full bg-black sm:h-3.5 sm:w-3.5 md:h-4 md:w-4 z-0" style={style} />
+          <div key={index} className="absolute h-2.5 w-2.5 rounded-full bg-black sm:h-3.5 sm:w-3.5 md:h-4 md:w-4 z-10" style={style} />
         ))}
 
         {/* PERSISTENT HEADER UI */}
         <div className="absolute inset-0 z-10 flex flex-col items-center justify-center px-3 text-center select-none sm:px-4">
-          <span className="inline-flex max-w-[92vw] bg-black text-white px-3 py-1.5 font-black uppercase italic text-[10px] tracking-widest sm:text-xs">
+          <span className="inline-flex max-w-[92vw] bg-none border border-green-400 px-3 py-1.5 font-black uppercase italic text-[10px] tracking-widest sm:text-xs text-green-500">
             {eyebrow}
           </span>
           <h2
-            className="mt-4 max-w-[94vw] font-black italic uppercase text-black text-[clamp(3.15rem,14vw,12rem)] leading-[0.86] opacity-95 sm:mt-5 sm:max-w-[96vw] sm:text-[clamp(4.4rem,15vw,12rem)] sm:leading-[0.78]"
-            style={{
-              WebkitTextStroke: 'clamp(1px, 0.16vw, 1.5px) black',
-              textShadow: 'clamp(4px, 0.7vw, 7px) clamp(4px, 0.7vw, 7px) 0 #FFD600, clamp(7px, 1.15vw, 12px) clamp(7px, 1.15vw, 12px) 0 rgba(0, 0, 0, 0.16)',
-            }}
+            className="mt-4 max-w-[94vw] font-black italic uppercase text-white text-[clamp(3.15rem,14vw,12rem)] leading-[0.86] opacity-95 sm:mt-5 sm:max-w-[96vw] sm:text-[clamp(4.4rem,15vw,12rem)] sm:leading-[0.78]"
           >
             {title}
           </h2>
@@ -144,7 +151,7 @@ const HowItWorksSection = ({ className = '' }) => {
               key={step.id}
               ref={(el) => (cardRefs.current[index] = el)}
               step={step}
-              className="absolute left-0 right-0 top-1/2 mx-auto w-[92%] max-w-130 will-change-transform pointer-events-auto [backface-visibility:hidden] sm:w-[90%]"
+              className="absolute left-0 right-0 top-1/2 mx-auto w-[92%] max-w-[700px] will-change-transform pointer-events-auto sm:w-[90%]"
               style={{ zIndex: index + 10 }} 
             />
           ))}

@@ -1,3 +1,4 @@
+import { useSmoothScroll } from '../../hooks';
 import {
   HeroSection,
   FooterCtaSection,
@@ -9,22 +10,26 @@ import {
 } from './sections';
 
 const HomePage = () => {
+  const { scrollRef } = useSmoothScroll();
+
   return (
-    <main className="relative w-screen max-w-full overflow-hidden bg-[#0A0C10]">
-      <div><HeroSection /></div>
-      <div className="relative z-0 w-screen max-w-full sm:h-[200svh]">
-        <div className="relative overflow-visible sm:sticky sm:top-0 sm:h-screen sm:overflow-hidden">
+    <div ref={scrollRef} data-scroll-container>
+      <main className="relative w-screen max-w-full overflow-x-hidden bg-[#0A0C10]">
+        <div data-scroll-section><HeroSection /></div>
+        <div className="relative z-0 w-screen max-w-full" data-scroll-section>
           <MonitorGrid />
         </div>
-      </div>
-      <div className="relative z-120 w-screen max-w-full sm:mt-[-100svh]">
-        <HowItWorksSection />
-      </div>
-      <IncidentResolutionSection className="relative z-70 w-screen max-w-full" />
-      <TestimonialsSection />
-      <PricingSection />
-      <FooterCtaSection />
-    </main>
+        <div className="relative z-120 w-screen max-w-full" data-scroll-section>
+          <HowItWorksSection />
+        </div>
+        <div data-scroll-section>
+          <IncidentResolutionSection className="relative z-70 w-screen max-w-full" />
+        </div>
+        <div data-scroll-section><TestimonialsSection /></div>
+        <div data-scroll-section><PricingSection /></div>
+        <div data-scroll-section><FooterCtaSection /></div>
+      </main>
+    </div>
   );
 };
 
