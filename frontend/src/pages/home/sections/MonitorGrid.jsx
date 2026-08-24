@@ -238,7 +238,7 @@ const MonitorGrid = () => {
       gsap.to(beam, {
         scaleX: 1,
         opacity: 1,
-        duration: 0.16,
+        duration: 1,
         delay: 0.27,
         ease: 'power2.out',
       });
@@ -252,7 +252,7 @@ const MonitorGrid = () => {
       });
       gsap.to(ring, {
         opacity: 0,
-        duration: 0.16,
+        duration: 0.5,
         delay: 0.38,
         ease: 'power2.out',
         onComplete: () => removeTrackedElement(ring),
@@ -335,9 +335,53 @@ const MonitorGrid = () => {
       );
     };
 
+    const createCardCornerSparks = (card) => {
+      const cardRect = card.getBoundingClientRect();
+      const playgroundRect = playground.getBoundingClientRect();
+      
+      // Create sparks at all 4 corners
+      const corners = [
+        { x: cardRect.left - playgroundRect.left, y: cardRect.top - playgroundRect.top }, // Top-left
+        { x: cardRect.right - playgroundRect.left, y: cardRect.top - playgroundRect.top }, // Top-right
+        { x: cardRect.left - playgroundRect.left, y: cardRect.bottom - playgroundRect.top }, // Bottom-left
+        { x: cardRect.right - playgroundRect.left, y: cardRect.bottom - playgroundRect.top }, // Bottom-right
+      ];
+
+      corners.forEach((corner, index) => {
+        const spark = trackElement(document.createElement('div'));
+        spark.style.cssText = `
+          position: absolute;
+          width: 8px;
+          height: 8px;
+          left: ${corner.x}px;
+          top: ${corner.y}px;
+          transform: translate(-50%, -50%) scale(0.2);
+          border-radius: 50%;
+          background: #75ff9e;
+          box-shadow: 
+            0 0 15px #75ff9e,
+            0 0 30px rgba(117,255,158,0.8),
+            0 0 45px rgba(117,255,158,0.4);
+          pointer-events: none;
+          z-index: 30;
+        `;
+        playground.appendChild(spark);
+
+        gsap.to(spark, {
+          scale: 1.5,
+          opacity: 0,
+          duration: 0.4,
+          delay: index * 0.05,
+          ease: 'power2.out',
+          onComplete: () => removeTrackedElement(spark),
+        });
+      });
+    };
+
     const createActivationParticles = (card) => {
       const cardRect = card.getBoundingClientRect();
-      for (let i = 0; i < 3; i += 1) {
+      // Increased from 3 to 12 particles for more energetic effect
+      for (let i = 0; i < 12; i += 1) {
         const particle = trackElement(document.createElement('div'));
         const side = Math.floor(Math.random() * 4);
         let x;
@@ -350,20 +394,20 @@ const MonitorGrid = () => {
 
         particle.style.cssText = `
           position:absolute;
-          width:2px;
-          height:2px;
+          width:3px;
+          height:3px;
           left:${x}%;
           top:${y}%;
           border-radius:50%;
           background:#75ff9e;
-          box-shadow:0 0 6px #75ff9e;
+          box-shadow:0 0 12px #75ff9e, 0 0 20px rgba(117,255,158,0.8);
           pointer-events:none;
           z-index:15;
         `;
         card.appendChild(particle);
 
         const angle = Math.random() * Math.PI * 2;
-        const distance = 8 + Math.random() * 8;
+        const distance = 12 + Math.random() * 16; // Increased distance
         const targetX = x + Math.cos(angle) * (distance / cardRect.width) * 100;
         const targetY = y + Math.sin(angle) * (distance / cardRect.height) * 100;
 
@@ -371,9 +415,9 @@ const MonitorGrid = () => {
           left: `${targetX}%`,
           top: `${targetY}%`,
           opacity: 0,
-          scale: 0.5,
-          duration: 0.3,
-          delay: Math.random() * 0.08,
+          scale: 0.3,
+          duration: 0.4 + Math.random() * 0.2, // Slightly longer duration
+          delay: Math.random() * 0.1,
           ease: 'power2.out',
           onComplete: () => removeTrackedElement(particle),
         });
@@ -423,7 +467,7 @@ const MonitorGrid = () => {
       });
 
       // Short pause after the bot settles.
-      revealTimeline.add(() => {}, 0.45);
+      revealTimeline.add(() => {}, 0.15);
 
       // Same clockwise order as the circular reveal version.
       const cardOrder = [0, 1, 3, 5, 2, 4];
@@ -432,7 +476,7 @@ const MonitorGrid = () => {
         const card = cardRefs.current[cardIndex];
         if (!card || window.getComputedStyle(card).display === 'none') return;
 
-        const start = seqIndex * 1.25;
+        const start = seqIndex * 0.45;
 
         revealTimeline.add(() => {
           const eyes = bot.querySelectorAll('.bot-eye');
@@ -452,6 +496,8 @@ const MonitorGrid = () => {
           if (!prefersReducedMotion) {
             createBotEnergyPulse();
             createRadialElectricBurst(8);
+            // Add corner sparks on card reveal
+            createCardCornerSparks(card);
           }
         }, start);
 
@@ -462,8 +508,20 @@ const MonitorGrid = () => {
         revealTimeline.to(card, {
           scale: 1,
           opacity: 1,
-          duration: prefersReducedMotion ? 0.35 : 0.48,
+          duration: prefersReducedMotion ? 0.25 : 0.32,
           ease: 'power2.out',
+          onStart: () => {
+            // Immediate electric flash on reveal
+            gsap.fromTo(card, {
+              borderColor: 'rgba(117, 255, 158, 1)',
+              boxShadow: '0 0 40px rgba(117,255,158,0.9), 0 0 80px rgba(117,255,158,0.6), inset 0 0 30px rgba(117,255,158,0.4)',
+            }, {
+              borderColor: 'rgba(117, 255, 158, 0.72)',
+              boxShadow: '0 0 22px rgba(117,255,158,0.32), 0 8px 32px rgba(0,0,0,0.22)',
+              duration: 0.3,
+              ease: 'power2.out',
+            });
+          }
         }, start + 0.36);
 
         revealTimeline.to(card, {
@@ -475,9 +533,7 @@ const MonitorGrid = () => {
 
         // Once the bot-face pulse has finished, trace the card perimeter
         // with a short electric highlight. Everything else stays unchanged.
-        revealTimeline.add(() => {
-          if (!prefersReducedMotion) createCardElectricHighlight(card);
-        }, start + 0.74);
+        // REMOVED: createCardElectricHighlight - thin loader removed per user request
 
         revealTimeline.add(() => {
           if (!prefersReducedMotion) createActivationParticles(card);
@@ -546,7 +602,7 @@ const MonitorGrid = () => {
       // PHASE 1 — anticipation.
       breakoutTimeline.to(bot, {
         scale: 0.92,
-        duration: 0.2,
+        duration: 0.10,
         ease: 'power2.in',
         onStart: () => {
           bot.querySelectorAll('.bot-eye').forEach((eye) => {
@@ -565,10 +621,10 @@ const MonitorGrid = () => {
         z: 280,
         rotateX: -8,
         rotateY: 5,
-        duration: 0.6,
+        duration: 0.30,
         ease: 'cubic-bezier(0.34, 1.56, 0.64, 1)',
         filter: 'blur(0px)',
-      }, '+=0.05');
+      }, '+=0.02');
 
       // PHASE 3 — local Features background shiver only.
       breakoutTimeline.to(background, { x: 6, duration: 0.08, ease: 'power2.out' }, '-=0.1');
@@ -596,16 +652,16 @@ const MonitorGrid = () => {
         z: 180,
         rotateX: 2,
         rotateY: 0,
-        duration: 0.6,
+        duration: 0.28,
         ease: 'elastic.out(1, 0.5)',
-      }, '+=0.2');
+      }, '+=0.05');
 
       breakoutTimeline.to(bot, {
         scale: 1.8,
         z: 160,
         rotateX: 0,
         rotateY: 0,
-        duration: 0.4,
+        duration: 0.20,
         ease: 'power2.out',
       });
 
@@ -706,20 +762,8 @@ const MonitorGrid = () => {
       </div>
 
       {/* 2. SEARCH BAR - Typing Animation */}
-      <div className="absolute left-[50%] -translate-x-1/2 z-[200] w-max max-w-[92vw]">
+      <div className="absolute top-2 left-[50%] -translate-x-1/2 z-[200] w-max max-w-[92vw]">
         <div className="bg-none border border-green-400 px-4 sm:px-6 md:px-10 py-1.5 sm:py-2 md:py-2.5 rounded-xl flex items-center gap-3 sm:gap-4 md:gap-6">
-          <svg
-            className="w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6 shrink-0"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="green"
-            strokeWidth="4"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          >
-            <circle cx="11" cy="11" r="8"></circle>
-            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-          </svg>
           <div className="animate-typing">
             <span className="font-black uppercase italic tracking-[0.08em] sm:tracking-[0.1em] text-green-500 text-base sm:text-lg md:text-xl">
               FEATURES
@@ -738,12 +782,12 @@ const MonitorGrid = () => {
       </div> */}
 
       {/* 4. ASYMMETRIC FOLDER - Pinned to right gutter */}
-      <div className="absolute top-[35%] md:top-[40%] right-[3%] md:right-[5%] z-10 w-20 h-14 md:w-24 md:h-16 pointer-events-none hidden sm:block">
+      {/* <div className="absolute top-[35%] md:top-[40%] right-[3%] md:right-[5%] z-10 w-20 h-14 md:w-24 md:h-16 pointer-events-none hidden sm:block">
         <div className="absolute -top-3 left-0 w-8 h-3 md:w-10 md:h-4 bg-black border-[2px] border-black rounded-t-sm"></div>
         <div className="absolute inset-0 bg-white border-[3px] border-black shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] flex items-center justify-center">
            <span className="font-black italic text-[7px] md:text-[8px] uppercase tracking-tighter opacity-40">DATA_FS</span>
         </div>
-      </div>
+      </div> */}
 
       {/* 5. CLUSTERED DOTS - Distributed across screen gutters */}
       {[
@@ -762,13 +806,13 @@ const MonitorGrid = () => {
       ))}
 
       {/* 6. CREDIT CARD - Left side anchor */}
-      <div className="absolute bottom-[18%] left-[5%] md:left-[10%] z-10 w-16 h-10 md:w-20 md:h-12 bg-white border-[3px] border-black shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] p-2 hidden sm:block">
+      {/* <div className="absolute bottom-[18%] left-[5%] md:left-[10%] z-10 w-16 h-10 md:w-20 md:h-12 bg-white border-[3px] border-black shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] p-2 hidden sm:block">
         <div className="w-8 md:w-10 h-1.5 md:h-2 bg-black mb-2"></div>
         <div className="w-4 md:w-6 h-1 bg-black opacity-20"></div>
-      </div>
+      </div> */}
 
       {/* 7. CURSOR ICON - Anchored bottom right */}
-      <div className="absolute bottom-[5%] sm:bottom-[8%] right-[4%] md:right-[8%] z-50 rotate-[-15deg] scale-75 md:scale-100">
+      {/* <div className="absolute bottom-[5%] sm:bottom-[8%] right-[4%] md:right-[8%] z-50 rotate-[-15deg] scale-75 md:scale-100">
         <svg
           className="h-10 w-10 sm:h-[45px] sm:w-[45px]"
           viewBox="0 0 24 24"
@@ -780,7 +824,7 @@ const MonitorGrid = () => {
             strokeWidth="1"
           />
         </svg>
-      </div>
+      </div> */}
 
       {/* Interactive Canvas Area with Bot and Telemetry Clouds */}
       <div 
