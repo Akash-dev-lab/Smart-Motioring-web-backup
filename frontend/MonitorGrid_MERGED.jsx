@@ -285,56 +285,6 @@ const MonitorGrid = () => {
       });
     };
 
-    // Bright electrical perimeter that appears after the bot-face activation.
-    // It is created only inside the current Features card and removed after the pass.
-    const createCardElectricHighlight = (card) => {
-      const highlight = trackElement(document.createElement('div'));
-      highlight.style.cssText = `
-        position:absolute;
-        inset:-2px;
-        border-radius:inherit;
-        pointer-events:none;
-        z-index:30;
-        padding:2px;
-        background:conic-gradient(
-          from 0deg,
-          transparent 0deg,
-          transparent 285deg,
-          rgba(117,255,158,.08) 310deg,
-          rgba(117,255,158,.45) 335deg,
-          #75ff9e 352deg,
-          rgba(117,255,158,.95) 360deg
-        );
-        -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);
-        -webkit-mask-composite:xor;
-        mask-composite:exclude;
-        opacity:0;
-        transform:rotate(0deg);
-        filter:drop-shadow(0 0 5px rgba(117,255,158,.8));
-      `;
-
-      card.appendChild(highlight);
-
-      gsap.fromTo(
-        highlight,
-        { opacity:0, rotation:0 },
-        {
-          opacity:1,
-          rotation:360,
-          duration:0.5,
-          ease:'none',
-          onComplete:() => {
-            gsap.to(highlight, {
-              opacity:0,
-              duration:0.12,
-              ease:'power2.out',
-              onComplete:() => removeTrackedElement(highlight),
-            });
-          },
-        }
-      );
-    };
-
     const createActivationParticles = (card) => {
       const cardRect = card.getBoundingClientRect();
       for (let i = 0; i < 3; i += 1) {
@@ -474,12 +424,6 @@ const MonitorGrid = () => {
           duration: 0.16,
           ease: 'power2.out',
         }, start + 0.58);
-
-        // Once the bot-face pulse has finished, trace the card perimeter
-        // with a short electric highlight. Everything else stays unchanged.
-        revealTimeline.add(() => {
-          if (!prefersReducedMotion) createCardElectricHighlight(card);
-        }, start + 0.74);
 
         revealTimeline.add(() => {
           if (!prefersReducedMotion) createActivationParticles(card);
@@ -871,7 +815,7 @@ const MonitorGrid = () => {
         {/* 1. UPTIME - Upper Left */}
         <div 
           ref={(el) => (cardRefs.current[0] = el)}
-          className="telemetry-cloud absolute top-[10%] left-[15%] w-64 animate-float opacity-0"
+          className="telemetry-cloud absolute top-[10%] left-[15%] w-64 animate-float"
           data-card-index="0"
           style={{ 
             animation: 'float 6s ease-in-out infinite',
@@ -900,7 +844,7 @@ const MonitorGrid = () => {
         {/* 2. ALERTS - Upper Right */}
         <div 
           ref={(el) => (cardRefs.current[1] = el)}
-          className="telemetry-cloud absolute top-[25%] right-[10%] w-72 animate-float opacity-0"
+          className="telemetry-cloud absolute top-[25%] right-[10%] w-72 animate-float"
           data-card-index="1"
           style={{ 
             animation: 'float 6s ease-in-out infinite',
@@ -931,7 +875,7 @@ const MonitorGrid = () => {
         {/* 3. MULTI-REGION - Lower Left */}
         <div 
           ref={(el) => (cardRefs.current[2] = el)}
-          className="telemetry-cloud absolute bottom-[15%] left-[10%] w-72 animate-float opacity-0"
+          className="telemetry-cloud absolute bottom-[15%] left-[10%] w-72 animate-float"
           data-card-index="2"
           style={{ 
             animation: 'float 6s ease-in-out infinite',
@@ -959,7 +903,7 @@ const MonitorGrid = () => {
         {/* 4. LATENCY - Middle Right */}
         <div 
           ref={(el) => (cardRefs.current[3] = el)}
-          className="telemetry-cloud absolute bottom-[25%] right-[15%] w-64 animate-float opacity-0"
+          className="telemetry-cloud absolute bottom-[25%] right-[15%] w-64 animate-float"
           data-card-index="3"
           style={{ 
             animation: 'float 6s ease-in-out infinite',
@@ -990,7 +934,7 @@ const MonitorGrid = () => {
         {/* 5. AI INCIDENT - Middle Left (hidden on mobile) */}
         <div 
           ref={(el) => (cardRefs.current[4] = el)}
-          className="telemetry-cloud absolute top-[40%] left-[2%] w-72 animate-float opacity-0 hidden md:block"
+          className="telemetry-cloud absolute top-[40%] left-[2%] w-72 animate-float hidden md:block"
           data-card-index="4"
           style={{ 
             animation: 'float 6s ease-in-out infinite',
@@ -1019,7 +963,7 @@ const MonitorGrid = () => {
         {/* 6. LOGS - Lower Right (hidden on mobile) */}
         <div 
           ref={(el) => (cardRefs.current[5] = el)}
-          className="telemetry-cloud absolute bottom-[5%] right-[30%] w-64 animate-float opacity-0 hidden md:block"
+          className="telemetry-cloud absolute bottom-[5%] right-[30%] w-64 animate-float hidden md:block"
           data-card-index="5"
           style={{ 
             animation: 'float 6s ease-in-out infinite',

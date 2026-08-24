@@ -871,7 +871,7 @@ const MonitorGrid = () => {
         {/* 1. UPTIME - Upper Left */}
         <div 
           ref={(el) => (cardRefs.current[0] = el)}
-          className="telemetry-cloud absolute top-[10%] left-[15%] w-64 animate-float opacity-0"
+          className="telemetry-cloud absolute top-[10%] left-[15%] w-64 animate-float"
           data-card-index="0"
           style={{ 
             animation: 'float 6s ease-in-out infinite',
@@ -900,7 +900,7 @@ const MonitorGrid = () => {
         {/* 2. ALERTS - Upper Right */}
         <div 
           ref={(el) => (cardRefs.current[1] = el)}
-          className="telemetry-cloud absolute top-[25%] right-[10%] w-72 animate-float opacity-0"
+          className="telemetry-cloud absolute top-[25%] right-[10%] w-72 animate-float"
           data-card-index="1"
           style={{ 
             animation: 'float 6s ease-in-out infinite',
@@ -931,7 +931,7 @@ const MonitorGrid = () => {
         {/* 3. MULTI-REGION - Lower Left */}
         <div 
           ref={(el) => (cardRefs.current[2] = el)}
-          className="telemetry-cloud absolute bottom-[15%] left-[10%] w-72 animate-float opacity-0"
+          className="telemetry-cloud absolute bottom-[15%] left-[10%] w-72 animate-float"
           data-card-index="2"
           style={{ 
             animation: 'float 6s ease-in-out infinite',
@@ -959,7 +959,7 @@ const MonitorGrid = () => {
         {/* 4. LATENCY - Middle Right */}
         <div 
           ref={(el) => (cardRefs.current[3] = el)}
-          className="telemetry-cloud absolute bottom-[25%] right-[15%] w-64 animate-float opacity-0"
+          className="telemetry-cloud absolute bottom-[25%] right-[15%] w-64 animate-float"
           data-card-index="3"
           style={{ 
             animation: 'float 6s ease-in-out infinite',
@@ -990,7 +990,7 @@ const MonitorGrid = () => {
         {/* 5. AI INCIDENT - Middle Left (hidden on mobile) */}
         <div 
           ref={(el) => (cardRefs.current[4] = el)}
-          className="telemetry-cloud absolute top-[40%] left-[2%] w-72 animate-float opacity-0 hidden md:block"
+          className="telemetry-cloud absolute top-[40%] left-[2%] w-72 animate-float hidden md:block"
           data-card-index="4"
           style={{ 
             animation: 'float 6s ease-in-out infinite',
@@ -1019,7 +1019,7 @@ const MonitorGrid = () => {
         {/* 6. LOGS - Lower Right (hidden on mobile) */}
         <div 
           ref={(el) => (cardRefs.current[5] = el)}
-          className="telemetry-cloud absolute bottom-[5%] right-[30%] w-64 animate-float opacity-0 hidden md:block"
+          className="telemetry-cloud absolute bottom-[5%] right-[30%] w-64 animate-float hidden md:block"
           data-card-index="5"
           style={{ 
             animation: 'float 6s ease-in-out infinite',
