@@ -404,9 +404,8 @@ const MonitorGrid = () => {
         revealOrigins.set(card, origin);
 
         gsap.set(card, {
-          opacity: 1,
+          opacity: 0,
           scale: 0.985,
-          clipPath: `circle(0% at ${origin})`,
           willChange: 'clip-path, transform, opacity',
         });
       });
@@ -416,7 +415,6 @@ const MonitorGrid = () => {
           cards.forEach((card) => {
             gsap.set(card, {
               clearProps: 'willChange',
-              clipPath: `circle(220% at ${revealOrigins.get(card)})`,
               scale: 1,
               opacity: 1,
             });
@@ -462,8 +460,8 @@ const MonitorGrid = () => {
         }, start + 0.05);
 
         revealTimeline.to(card, {
-          clipPath: `circle(220% at ${revealOrigins.get(card)})`,
           scale: 1,
+          opacity: 1,
           duration: prefersReducedMotion ? 0.35 : 0.48,
           ease: 'power2.out',
         }, start + 0.36);
@@ -788,7 +786,7 @@ const MonitorGrid = () => {
       <div 
         ref={playgroundRef}
         id="playground" 
-        className="relative w-full max-w-6xl h-[600px] mx-auto mt-24 z-20"
+        className="relative w-full bg-amber- max-w-6xl h-[600px] mx-auto mt-24 z-20"
       >
         {/* Shockwave Effect */}
         <div
