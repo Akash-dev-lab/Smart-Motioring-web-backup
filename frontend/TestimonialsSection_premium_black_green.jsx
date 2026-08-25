@@ -250,7 +250,7 @@ const TestimonialsSection = ({ className = '' }) => {
   return (
     <section
       ref={sectionRef}
-      className={`relative z-[60] h-screen h-[100svh] w-screen max-w-full overflow-hidden border-b-[6px] border-black bg-[#050709] font-mono text-white ${className}`}
+      className={`relative z-[60] h-screen h-[100svh] w-screen max-w-full overflow-hidden border-b-[6px] border-black bg-[#111317] font-mono text-white ${className}`}
     >
       <div
         className="pointer-events-none absolute inset-0 z-[1]"
@@ -279,7 +279,7 @@ const TestimonialsSection = ({ className = '' }) => {
                 className="mt-4 max-w-[12ch] text-wrap font-black uppercase italic leading-[0.88] text-[clamp(2.35rem,8vw,5.9rem)] sm:mt-5 sm:text-[clamp(3rem,7.5vw,6.7rem)]"
                 style={{
                   WebkitTextStroke: 'clamp(1px, 0.16vw, 1.5px) white',
-                  // textShadow: 'clamp(5px, 0.8vw, 9px) clamp(5px, 0.8vw, 9px) 0 #00E676, clamp(9px, 1.2vw, 14px) clamp(9px, 1.2vw, 14px) 0 rgba(0,0,0,0.5)',
+                  textShadow: 'clamp(5px, 0.8vw, 9px) clamp(5px, 0.8vw, 9px) 0 #00E676, clamp(9px, 1.2vw, 14px) clamp(9px, 1.2vw, 14px) 0 rgba(0,0,0,0.5)',
                 }}
               >
                 Teams that caught it first.
@@ -289,47 +289,47 @@ const TestimonialsSection = ({ className = '' }) => {
               {['MTTR', 'NOISE', 'RCA'].map((label, index) => (
                 <div key={label} className="border-[3px] border-white bg-black px-2 py-3 text-center text-white shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] sm:px-3 sm:py-4">
                   <span className="block font-black uppercase tracking-[0.12em] text-[9px] sm:text-[10px]">{label}</span>
-                  <span className="mt-1 block font-black text-green-400 text-xl leading-none sm:text-3xl">{['-34%', '-52%', '2.4x'][index]}</span>
+                  <span className="mt-1 block font-black text-xl leading-none sm:text-3xl">{['-34%', '-52%', '2.4x'][index]}</span>
                 </div>
               ))}
             </div>
           </div>
 
-          {testimonials.map((item, index) => {
-            const Icon = item.icon;
+            {testimonials.map((item, index) => {
+              const Icon = item.icon;
 
-            return (
-              <article
-                key={item.name}
-                ref={(el) => (cardRefs.current[index] = el)}
-                className="relative flex h-[min(390px,76svh)] w-[88vw] max-w-[540px] shrink-0 flex-col justify-between border-[4px] border-white bg-black p-4 text-white shadow-[8px_8px_0px_0px_rgba(0,0,0,1),0_0_28px_rgba(0,230,118,0.08)] sm:w-[500px] sm:p-5"
-              >
-                <div className="flex items-start justify-between gap-4">
-                  <Quote className="h-9 w-9 text-[#00E676]" strokeWidth={3.4} />
-                  <div className="grid h-14 w-14 shrink-0 place-items-center border-[3px] border-white bg-black">
-                    <Icon className="h-7 w-7 text-[#00E676]" strokeWidth={3.2} />
-                  </div>
-                </div>
-                <p className="mt-4 font-black uppercase italic leading-[1.02] text-[clamp(1.05rem,3.6vw,1.78rem)] sm:mt-5 sm:leading-[0.98]">
-                  {item.quote}
-                </p>
-                <div className="mt-4 border-t-[3px] border-white pt-3 sm:mt-5 sm:pt-4">
-                  <span className="inline-flex border-[3px] border-white bg-black px-2 py-1 font-black uppercase tracking-[0.13em] text-[#00E676] text-[10px]">
-                    {item.metric}
-                  </span>
-                  <div className="mt-3 grid grid-cols-[minmax(0,1fr)_auto] items-end gap-4">
-                    <div className="min-w-0 pr-1">
-                      <h3 className="break-words font-black uppercase text-lg leading-[0.95] sm:text-xl">{item.name}</h3>
-                      <p className="mt-1 break-words font-bold uppercase tracking-[0.08em] text-white/70 text-[10px] sm:text-xs">
-                        {item.role} / {item.company}
-                      </p>
+              return (
+                <article
+                  key={item.name}
+                  ref={(el) => (cardRefs.current[index] = el)}
+                  className="relative flex h-[min(390px,76svh)] w-[88vw] max-w-[540px] shrink-0 flex-col justify-between border-[4px] border-white bg-black p-4 text-white shadow-[8px_8px_0px_0px_rgba(0,0,0,1),0_0_28px_rgba(0,230,118,0.08)] sm:w-[500px] sm:p-5"
+                >
+                  <div className="flex items-start justify-between gap-4">
+                    <Quote className="h-9 w-9 text-[#00E676]" strokeWidth={3.4} />
+                    <div className="grid h-14 w-14 shrink-0 place-items-center border-[3px] border-white bg-black">
+                      <Icon className="h-7 w-7 text-[#00E676]" strokeWidth={3.2} />
                     </div>
-                    <span className="shrink-0 border-2 border-white px-2 py-1 font-black text-xs">0{index + 1}</span>
                   </div>
-                </div>
-              </article>
-            );
-          })}
+                  <p className="mt-4 font-black uppercase italic leading-[1.02] text-[clamp(1.05rem,3.6vw,1.78rem)] sm:mt-5 sm:leading-[0.98]">
+                    {item.quote}
+                  </p>
+                  <div className="mt-4 border-t-[3px] border-white pt-3 sm:mt-5 sm:pt-4">
+                    <span className="inline-flex border-[3px] border-white bg-black px-2 py-1 font-black uppercase tracking-[0.13em] text-[#00E676] text-[10px]">
+                      {item.metric}
+                    </span>
+                    <div className="mt-3 grid grid-cols-[minmax(0,1fr)_auto] items-end gap-4">
+                      <div className="min-w-0 pr-1">
+                        <h3 className="break-words font-black uppercase text-lg leading-[0.95] sm:text-xl">{item.name}</h3>
+                        <p className="mt-1 break-words font-bold uppercase tracking-[0.08em] text-white/70 text-[10px] sm:text-xs">
+                          {item.role} / {item.company}
+                        </p>
+                      </div>
+                      <span className="shrink-0 border-2 border-white px-2 py-1 font-black text-xs">0{index + 1}</span>
+                    </div>
+                  </div>
+                </article>
+              );
+            })}
         </div>
       </div>
     </section>
