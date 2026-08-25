@@ -345,7 +345,7 @@ const FooterCtaSection = ({ className = '' }) => {
         <div className="footer-nav grid gap-12 sm:gap-10 grid-cols-1 sm:grid-cols-2 lg:grid-cols-[1.05fr_1fr_1fr_1fr] mt-12 md:mt-24">
           <div className="space-y-6 lg:pr-6">
             <div className="bg-black text-white p-4 inline-block transform -skew-x-12 border-4 border-white shadow-[8px_8px_0px_0px_rgba(0,230,118,1)]">
-              <h3 className="text-2xl md:text-3xl font-black italic uppercase leading-none tracking-tighter">Web Trace</h3>
+              <h3 className="text-2xl md:text-3xl font-black italic uppercase leading-none tracking-tighter">DRISHYAM</h3>
             </div>
             <p className="max-w-xs text-xs md:text-sm font-black uppercase italic leading-tight text-white">
               Production monitoring that turns alert noise into a readable incident trail.
@@ -354,7 +354,7 @@ const FooterCtaSection = ({ className = '' }) => {
               <IconTileLink className="bg-white text-black" label="Email Drishyam">
                 <Mail className="h-4.5 w-4.5 md:h-5 md:w-5" strokeWidth={3} />
               </IconTileLink>
-              <IconTileLink className="bg-[#3cff00] text-black" label="Developer resources">
+              <IconTileLink className="bg-[#FFD600] text-black" label="Developer resources">
                 <Code2 className="h-4.5 w-4.5 md:h-5 md:w-5" strokeWidth={3} />
               </IconTileLink>
             </div>
@@ -362,53 +362,31 @@ const FooterCtaSection = ({ className = '' }) => {
 
           {footerGroups.map((group) => (
             <div key={group.title}>
-              <div className="mb-5 flex items-end justify-between gap-3 border-b-4 border-white pb-3">
+              <div className="mb-5 flex items-end justify-between gap-3 border-b-4 border-black pb-3">
                 <div>
-                  <h4 className="inline-block border-2 border-black bg-[#04ff00] px-2 font-black uppercase italic tracking-widest text-black text-[9px] md:text-[10px] shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
+                  <h4 className="inline-block border-2 border-black bg-[#FFD600] px-2 font-black uppercase italic tracking-widest text-black text-[9px] md:text-[10px] shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
                     {group.title}
                   </h4>
-                  <p className="mt-2 md:mt-3 font-black uppercase tracking-[0.16em] text-white text-[8px] md:text-[9px]">{group.kicker}</p>
+                  <p className="mt-2 md:mt-3 font-black uppercase tracking-[0.16em] text-black/60 text-[8px] md:text-[9px]">{group.kicker}</p>
                 </div>
-                <Hash className="h-4 w-4 text-white md:h-4.5 md:w-4.5" strokeWidth={4} />
+                <Hash className="h-4 w-4 text-black md:h-4.5 md:w-4.5" strokeWidth={4} />
               </div>
 
               <ul className="grid gap-3">
-                {group.links.map((link, index) => {
-                  const globalIndex =
-                    footerGroups
-                      .slice(0, footerGroups.findIndex((g) => g.title === group.title))
-                      .reduce((total, currentGroup) => total + currentGroup.links.length, 0) +
-                    index +
-                    1;
-
-                  return (
-                    <li key={link.label} className="footer-point">
-                      <a
-                        className="group grid grid-cols-[2rem_minmax(0,1fr)_auto] md:grid-cols-[2.35rem_minmax(0,1fr)_auto] items-center gap-2 md:gap-3 border-4 border-black bg-white/95 p-2 md:p-3 text-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] md:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] transition-all hover:-translate-y-1 hover:bg-[#00E676] hover:shadow-[7px_7px_0px_0px_rgba(0,0,0,1)]"
-                        href="#"
-                      >
-                        <span className="grid h-8 w-8 md:h-9 md:w-9 place-items-center border-2 border-black bg-[#1E6BFF] font-black text-white text-[9px] md:text-[10px]">
-                          {String(globalIndex).padStart(2, '0')}
-                        </span>
-
-                        <span className="min-w-0">
-                          <span className="block truncate font-black uppercase italic leading-none text-xs md:text-sm">
-                            {link.label}
-                          </span>
-
-                          <span className="mt-1 block truncate font-black uppercase tracking-[0.08em] text-black/55 text-[8px] md:text-[9px]">
-                            {link.note}
-                          </span>
-                        </span>
-
-                        <ArrowRight
-                          className="h-3.75 w-3.75 transition-transform group-hover:translate-x-1 md:h-[17px] md:w-[17px]"
-                          strokeWidth={4}
-                        />
-                      </a>
-                    </li>
-                  );
-                })}
+                {group.links.map((link, index) => (
+                  <li key={link.label} className="footer-point">
+                    <a className="group grid grid-cols-[2rem_minmax(0,1fr)_auto] md:grid-cols-[2.35rem_minmax(0,1fr)_auto] items-center gap-2 md:gap-3 border-4 border-black bg-white/95 p-2 md:p-3 text-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] md:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] transition-all hover:-translate-y-1 hover:bg-[#00E676] hover:shadow-[7px_7px_0px_0px_rgba(0,0,0,1)]" href="#">
+                      <span className="grid h-8 w-8 md:h-9 md:w-9 place-items-center border-2 border-black bg-[#1E6BFF] font-black text-white text-[9px] md:text-[10px]">
+                        0{index + 1}
+                      </span>
+                      <span className="min-w-0">
+                        <span className="block truncate font-black uppercase italic leading-none text-xs md:text-sm">{link.label}</span>
+                        <span className="mt-1 block truncate font-black uppercase tracking-[0.08em] text-black/55 text-[8px] md:text-[9px]">{link.note}</span>
+                      </span>
+                      <ArrowRight className="h-3.75 w-3.75 transition-transform group-hover:translate-x-1 md:h-[17px] md:w-[17px]" strokeWidth={4} />
+                    </a>
+                  </li>
+                ))}
               </ul>
             </div>
           ))}
