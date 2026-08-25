@@ -23,7 +23,7 @@ const HeroSection = () => {
     };
 
     window.addEventListener('scroll', handleScroll, { passive: true });
-
+    
     return () => {
       window.removeEventListener('scroll', handleScroll);
     };
@@ -34,7 +34,7 @@ const HeroSection = () => {
       className="bg-grain relative flex min-h-[720px] w-full flex-col items-center overflow-hidden bg-[#111317] px-3 pb-10 pt-[4.75rem] font-mono sm:min-h-[112svh] sm:px-5 sm:pb-14 sm:pt-[6rem] lg:pt-[6.25rem] max-[380px]:px-2"
     >
       {/* Grid Background */}
-      <div
+      <div 
         className="absolute inset-0 z-10 pointer-events-none"
         style={{
           backgroundImage: 'linear-gradient(to right, rgba(255,255,255,0.03) 1px, transparent 1px), linear-gradient(to bottom, rgba(255,255,255,0.03) 1px, transparent 1px)',
@@ -43,9 +43,9 @@ const HeroSection = () => {
         data-scroll
         data-scroll-speed="0.2"
       />
-
+      
       {/* Whitish Glow Effect in Middle */}
-      <div
+      <div 
         className="absolute inset-0 z-2 pointer-events-none"
         data-scroll
         data-scroll-speed="0.1"
@@ -53,9 +53,8 @@ const HeroSection = () => {
         <div className="absolute w-full h-full bg-white/20 blur-[300px]"></div>
         <div className="absolute bottom-1/4 left-1/4 w-1/3 h-1/3 bg-white/5 rounded-full blur-[100px]"></div>
       </div>
-
+      
       <div
-        className="pointer-events-none absolute inset-0 z-[1]"
         data-scroll
         data-scroll-speed="0.2"
       >
@@ -71,13 +70,14 @@ const HeroSection = () => {
         <div className="absolute left-1/2 top-1/2 h-[74vmin] w-[74vmin] -translate-x-1/2 -translate-y-1/2 rounded-full border-[3.5rem] border-black" />
       </div>
 
-      <header
+      <header 
         ref={navbarRef}
-        className={`absolute left-0 top-0 z-30 w-full px-2.5 py-2.5 sm:px-5 sm:py-3 lg:px-8 transition-all duration-500 ${isScrolled ? 'navbar-scrolled' : ''
-          }`}
+        className={`absolute left-0 top-0 z-30 w-full px-2.5 py-2.5 sm:px-5 sm:py-3 lg:px-8 transition-all duration-500 ${
+          isScrolled ? 'navbar-scrolled' : ''
+        }`}
       >
-        <div
-          className="
+  <div
+    className="
       mx-auto grid max-w-7xl
       grid-cols-[1fr_auto]
       items-center gap-2
@@ -96,17 +96,17 @@ const HeroSection = () => {
       md:px-4
       hover:border-white/[0.14]
     "
-        >
-          {/* =====================================================
+  >
+    {/* =====================================================
         BRAND
     ===================================================== */}
-          <a
-            href="/"
-            className="flex min-w-0 items-center gap-2.5 sm:gap-3"
-            aria-label="Smart Monitoring home"
-          >
-            <span
-              className="
+    <a
+      href="/"
+      className="flex min-w-0 items-center gap-2.5 sm:gap-3"
+      aria-label="Smart Monitoring home"
+    >
+      <span
+        className="
           relative grid h-10 w-10 shrink-0
           place-items-center overflow-hidden
           rounded-xl
@@ -119,64 +119,64 @@ const HeroSection = () => {
           sm:rounded-2xl
           sm:text-xl
         "
-              style={{
-                fontFamily: "Geist, sans-serif",
-                letterSpacing: "-0.02em",
-              }}
-            >
-              {/* Tiny status strip */}
-              <span
-                className="
+        style={{
+          fontFamily: "Geist, sans-serif",
+          letterSpacing: "-0.02em",
+        }}
+      >
+        {/* Tiny status strip */}
+        <span
+          className="
             absolute inset-x-0 top-0
             h-1.5
             bg-[#4ae176]/20
             border-b border-[#4ae176]/35
           "
-              />
+        />
 
-              S
-            </span>
+        S
+      </span>
 
-            <span className="hidden min-w-0 sm:block">
-              <span
-                className="
+      <span className="hidden min-w-0 sm:block">
+        <span
+          className="
             block truncate
             text-lg font-semibold
             leading-none
             text-[#4ae176]
             sm:text-xl
           "
-                style={{
-                  fontFamily: "Manrope, sans-serif",
-                  letterSpacing: "-0.01em",
-                }}
-              >
-                Smart Monitoring
-              </span>
+          style={{
+            fontFamily: "Manrope, sans-serif",
+            letterSpacing: "-0.01em",
+          }}
+        >
+          Smart Monitoring
+        </span>
 
-              <span
-                className="
+        <span
+          className="
             mt-1 hidden truncate
             text-[9px] font-medium
             uppercase tracking-[0.05em]
             text-[#8e9ab0]
             sm:block
           "
-                style={{
-                  fontFamily: "JetBrains Mono, monospace",
-                  letterSpacing: "0.05em",
-                }}
-              >
-                AI incident command
-              </span>
-            </span>
-          </a>
+          style={{
+            fontFamily: "JetBrains Mono, monospace",
+            letterSpacing: "0.05em",
+          }}
+        >
+          AI incident command
+        </span>
+      </span>
+    </a>
 
-          {/* =====================================================
+    {/* =====================================================
         CENTER NAVIGATION
     ===================================================== */}
-          <nav
-            className="
+    <nav
+      className="
         hidden items-center
         rounded-full
         border border-white/[0.09]
@@ -186,13 +186,13 @@ const HeroSection = () => {
         backdrop-blur-lg
         md:flex
       "
-            aria-label="Primary navigation"
-          >
-            {navItems.map((item) => (
-              <a
-                key={item.href}
-                href={item.href}
-                className="
+      aria-label="Primary navigation"
+    >
+      {navItems.map((item) => (
+        <a
+          key={item.href}
+          href={item.href}
+          className="
             rounded-full
             px-4 py-2
             text-xs font-medium
@@ -202,27 +202,27 @@ const HeroSection = () => {
             hover:bg-white/[0.06]
             hover:text-[#eef1f7]
           "
-                style={{
-                  fontFamily: "Inter, sans-serif",
-                  letterSpacing: "0.05em",
-                }}
-              >
-                {item.label}
-              </a>
-            ))}
-          </nav>
+          style={{
+            fontFamily: "Inter, sans-serif",
+            letterSpacing: "0.05em",
+          }}
+        >
+          {item.label}
+        </a>
+      ))}
+    </nav>
 
-          {/* =====================================================
+    {/* =====================================================
         ACCOUNT ACTIONS
     ===================================================== */}
-          <nav
-            className="flex items-center justify-end gap-2 sm:gap-3"
-            aria-label="Account actions"
-          >
-            {/* Sign In */}
-            <a
-              href="/signin"
-              className="
+    <nav
+      className="flex items-center justify-end gap-2 sm:gap-3"
+      aria-label="Account actions"
+    >
+      {/* Sign In */}
+      <a
+        href="/signin"
+        className="
           inline-flex h-10
           items-center justify-center
           gap-1.5
@@ -242,19 +242,19 @@ const HeroSection = () => {
           md:px-4
           md:text-sm
         "
-              style={{ fontFamily: "Inter, sans-serif" }}
-            >
-              <LogIn size={16} strokeWidth={2.5} />
+        style={{ fontFamily: "Inter, sans-serif" }}
+      >
+        <LogIn size={16} strokeWidth={2.5} />
 
-              <span className="hidden min-[380px]:inline">
-                Sign in
-              </span>
-            </a>
+        <span className="hidden min-[380px]:inline">
+          Sign in
+        </span>
+      </a>
 
-            {/* Sign Up */}
-            <a
-              href="/signup"
-              className="
+      {/* Sign Up */}
+      <a
+        href="/signup"
+        className="
           group inline-flex h-10
           items-center justify-center
           gap-1.5
@@ -274,33 +274,33 @@ const HeroSection = () => {
           md:px-4
           md:text-sm
         "
-              style={{ fontFamily: "Manrope, sans-serif" }}
-            >
-              <UserPlus
-                size={16}
-                strokeWidth={2.5}
-                className="sm:hidden"
-              />
+        style={{ fontFamily: "Manrope, sans-serif" }}
+      >
+        <UserPlus
+          size={16}
+          strokeWidth={2.5}
+          className="sm:hidden"
+        />
 
-              <span>Sign up</span>
+        <span>Sign up</span>
 
-              <ArrowRight
-                size={16}
-                strokeWidth={2.5}
-                className="
+        <ArrowRight
+          size={16}
+          strokeWidth={2.5}
+          className="
             hidden
             transition-transform
             group-hover:translate-x-0.5
             sm:block
           "
-              />
-            </a>
-          </nav>
-        </div>
-      </header>
+        />
+      </a>
+    </nav>
+  </div>
+</header>
 
       {/* Main Hero Content - Two Column Layout */}
-      <main
+      <main 
         className="relative z-10 mx-auto flex w-full max-w-7xl flex-grow items-center justify-center px-6 py-10"
         data-scroll
         data-scroll-speed="0.6"

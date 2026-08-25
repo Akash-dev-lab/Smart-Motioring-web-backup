@@ -23,11 +23,11 @@ const incidentPhases = [
     glyph: '!',
     eyebrow: 'Incident detected',
     title: 'Payment API Failure',
-    panelClass: 'bg-[#050709]/20 text-white shadow-[0_0_45px_rgba(0,230,118,0.08)]',
+    panelClass: 'border-[#00E676]/75 bg-[#050709]/95 text-white shadow-[0_0_45px_rgba(0,230,118,0.08)]',
     accentClass: 'border-[#00E676] text-[#00E676]',
-    // backgroundLabelClass: 'border-[#00E676]/60 bg-[#00E676]/[0.025] text-[#00E676] bg-transparent shadow-[0_0_18px_rgba(0,230,118,0.04)]',
-    backgroundLabelOpacity: 'opacitys-[0.18] md:opacity-[0.24]',
-    // gridLine: 'rgba(0, 230, 118, 0.07)',
+    backgroundLabelClass: 'border-[#00E676]/60 bg-[#00E676]/[0.025] text-[#00E676] bg-transparent shadow-[0_0_18px_rgba(0,230,118,0.04)]',
+    backgroundLabelOpacity: 'opacity-[0.18] md:opacity-[0.24]',
+    gridLine: 'rgba(0, 230, 118, 0.07)',
     statusClass: 'bg-[#00E676] text-[#050709]',
     meterClass: 'bg-[#00E676] w-[72%]',
     summary: 'The checkout path is timing out under live traffic.',
@@ -43,11 +43,11 @@ const incidentPhases = [
     glyph: '?',
     eyebrow: 'Trace in progress',
     title: 'From Signal To Cause',
-    panelClass: 'bg-[#050709]/95 text-white shadow-[0_0_45px_rgba(0,230,118,0.08)]',
+    panelClass: 'border-[#00E676]/75 bg-[#050709]/95 text-white shadow-[0_0_45px_rgba(0,230,118,0.08)]',
     accentClass: 'border-[#00E676] text-[#00E676]',
     backgroundLabelClass: 'border-[#00E676]/60 bg-[#00E676]/[0.025] text-[#00E676] shadow-[0_0_18px_rgba(0,230,118,0.04)]',
     backgroundLabelOpacity: 'opacity-[0.18] md:opacity-[0.24]',
-    // gridLine: 'rgba(0, 230, 118, 0.07)',
+    gridLine: 'rgba(0, 230, 118, 0.07)',
     statusClass: 'bg-[#00E676] text-[#050709]',
     meterClass: 'bg-[#00E676] w-[86%]',
     summary: 'Logs, checks, and dependency signals collapse into one readable trail.',
@@ -63,7 +63,7 @@ const incidentPhases = [
     glyph: '+',
     eyebrow: 'Cause identified',
     title: 'Issue Identified',
-    panelClass: ' bg-[#050709]/95 text-white shadow-[0_0_45px_rgba(0,230,118,0.08)]',
+    panelClass: 'border-[#00E676]/75 bg-[#050709]/95 text-white shadow-[0_0_45px_rgba(0,230,118,0.08)]',
     accentClass: 'border-[#00E676] text-[#00E676]',
     backgroundLabelClass: 'border-[#00E676]/60 bg-[#00E676]/[0.025] text-[#00E676] shadow-[0_0_18px_rgba(0,230,118,0.04)]',
     backgroundLabelOpacity: 'opacity-[0.18] md:opacity-[0.24]',
@@ -112,14 +112,14 @@ const PhaseContent = ({ phase }) => (
   <div className="relative z-50 flex h-[calc(100svh-180px)] max-h-[590px] min-h-[500px] w-full max-w-[calc(100vw-1rem)] items-center justify-center sm:h-[590px] sm:max-w-[94vw] md:max-w-[980px]">
     <div
       className={`relative z-10 flex h-full w-full flex-col overflow-hidden border-[3px] shadow-[7px_7px_0px_0px_rgba(0,0,0,1)] backdrop-blur-[2px] sm:border-[4px] sm:shadow-[10px_10px_0px_0px_rgba(0,0,0,1)] ${phase.panelClass}`}
-      style={{
-        backgroundImage:
-          `linear-gradient(${phase.gridLine} 1px, transparent 1px), linear-gradient(90deg, ${phase.gridLine} 1px, transparent 1px)`,
-        backgroundSize: 'clamp(2rem, 5vw, 3.5rem) clamp(2rem, 5vw, 3.5rem)',
-        backgroundPosition: '-1px -1px',
-      }}
+    // style={{
+    //   backgroundImage:
+    //     `linear-gradient(${phase.gridLine} 1px, transparent 1px), linear-gradient(90deg, ${phase.gridLine} 1px, transparent 1px)`,
+    //   backgroundSize: 'clamp(2rem, 5vw, 3.5rem) clamp(2rem, 5vw, 3.5rem)',
+    //   backgroundPosition: '-1px -1px',
+    // }}
     >
-      {/* <div className="grid grid-cols-[1fr_auto] items-center border-b-[3px] border-[#00E676]/70 bg-[#050709] text-[#00E676] sm:border-b-[4px]">
+      <div className="grid grid-cols-[1fr_auto] items-center border-b-[3px] border-[#00E676]/70 bg-[#050709] text-[#00E676] sm:border-b-[4px]">
         <div className="flex min-w-0 items-center gap-2 px-3 py-2 sm:px-4 sm:py-3">
           {[0, 1, 2].map((dot) => (
             <span key={dot} className="h-2 w-2 shrink-0 rounded-full bg-[#00E676] shadow-[0_0_8px_rgba(0,230,118,0.8)] sm:h-2.5 sm:w-2.5" />
@@ -131,7 +131,7 @@ const PhaseContent = ({ phase }) => (
         <span className={`m-1.5 border-2 border-[#00E676] px-2 py-1 font-black uppercase tracking-[0.14em] text-[9px] shadow-[0_0_12px_rgba(0,230,118,0.15)] sm:m-2 sm:text-[10px] ${phase.statusClass}`}>
           live
         </span>
-      </div> */}
+      </div>
 
       <TimelineRail activeId={phase.id} />
 
@@ -144,8 +144,9 @@ const PhaseContent = ({ phase }) => (
             {phase.eyebrow}
           </p>
           <h2
-            className={`mt-2 font-black italic uppercase leading-[0.88] tracking-normal text-[clamp(1.65rem,9vw,2.45rem)] sm:mt-4 sm:leading-[0.88] sm:text-[clamp(1.85rem,10.5vw,5.9rem)] ${phase.id === 'analyzing' ? 'max-w-[18ch]' : 'max-w-[14ch]'
-              }`}
+            className={`mt-2 font-black italic uppercase leading-[0.88] tracking-normal text-[clamp(1.65rem,9vw,2.45rem)] sm:mt-4 sm:leading-[0.88] sm:text-[clamp(1.85rem,10.5vw,5.9rem)] ${
+              phase.id === 'analyzing' ? 'max-w-[18ch]' : 'max-w-[14ch]'
+            }`}
           >
             {phase.title}
           </h2>
