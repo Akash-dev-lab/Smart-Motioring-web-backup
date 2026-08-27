@@ -164,20 +164,20 @@ const TechnicalBackground = () => {
 const plans = [
   {
     name: 'Signal Desk',
-    price: '$29',
+    price: '₹999',
     cadence: 'monitor / month',
     note: 'For small surfaces that need clean signal.',
     tint: 'bg-black',
-    accent: 'bg-[#00E676]',
+    accent: 'bg-[#FFFF00]',
     includes: ['Uptime checks', 'Latency alerts', '7 day history'],
   },
   {
     name: 'War Room',
-    price: '$99',
+    price: '₹3000 ',
     cadence: 'service / month',
     note: 'For teams that need context before the call starts.',
     tint: 'bg-black',
-    accent: 'bg-[#00E676]',
+    accent: 'bg-[#FFFF00]',
     includes: ['Trace map', 'RCA timeline', 'Noise scoring'],
   },
   {
@@ -186,7 +186,7 @@ const plans = [
     cadence: 'production scale',
     note: 'For high-traffic systems with private workflows.',
     tint: 'bg-black',
-    accent: 'bg-[#00E676]',
+    accent: 'bg-[#FFFF00]',
     includes: ['Runbook actions', 'Private integrations', 'Priority support'],
   },
 ];
@@ -246,7 +246,7 @@ const PricingSection = ({ className = '' }) => {
           <article
             key={plan.name}
             ref={(el) => (cardRefs.current[index] = el)}
-            className={`relative flex min-h-[360px] flex-col overflow-hidden border-[4px] border-white ${plan.tint} p-4 text-white shadow-[8px_8px_0px_0px_rgba(0,0,0,1),0_0_28px_rgba(0,230,118,0.08)] sm:p-5`}
+            className={`relative flex min-h-[360px] flex-col overflow-hidden border border-white rounded-lg ${plan.tint} p-4 text-white shadow-[8px_8px_0px_0px_rgba(0,0,0,1),0_0_28px_rgba(0,230,118,0.08)] sm:p-5`}
           >
             <div className={`absolute inset-x-0 top-0 h-1.5 ${plan.accent}`} />
             <div className="border-b-[3px] border-white pb-4 pt-2">
@@ -255,7 +255,7 @@ const PricingSection = ({ className = '' }) => {
             </div>
 
             <div className="py-7">
-              <div className="font-black uppercase italic leading-none tracking-normal text-[clamp(3.9rem,11vw,6.3rem)]">
+              <div className="font-black uppercase italic leading-none tracking-normal text-green-400 text-[clamp(3.9rem,11vw,6.3rem)]">
                 {plan.price}
               </div>
               <div className="mt-2 font-black uppercase tracking-[0.12em] text-[10px] text-white/55 sm:text-xs">
@@ -272,7 +272,7 @@ const PricingSection = ({ className = '' }) => {
               ))}
             </ul>
 
-            <button className="mt-5 border-[3px] border-white bg-[#00E676] px-3 py-3 text-left font-black uppercase italic tracking-[0.12em] text-black transition-colors hover:bg-white">
+            <button className="mt-5 border-[3px] border-white bg-white cursor-pointer px-3 py-3 text-left font-black uppercase italic tracking-[0.12em] text-black transition-colors hover:bg-green-400">
               Select plan
             </button>
           </article>

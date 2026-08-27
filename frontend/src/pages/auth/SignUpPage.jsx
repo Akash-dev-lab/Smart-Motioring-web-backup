@@ -23,12 +23,12 @@ const SignUpPage = () => {
 
     try {
       const response = await register({ name, email, password });
-      
+
       // Save user to localStorage
       if (response.user) {
         setCurrentUser(response.user);
       }
-      
+
       // Redirect to dashboard
       navigate('/dashboard/overview');
     } catch (err) {
@@ -72,9 +72,9 @@ const SignUpPage = () => {
           <button
             type="submit"
             disabled={isLoading}
-            className="group mt-1 inline-flex h-12 min-w-0 items-center justify-between gap-3 border-[3px] border-black bg-[#FFD600] px-3 text-sm font-black uppercase italic shadow-[4px_4px_0_#000] transition-transform hover:-translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed sm:mt-2 sm:h-13 sm:border-[4px] sm:px-4 sm:text-base sm:shadow-[6px_6px_0_#000]"
+            className="group mt-1 inline-flex h-12 min-w-0 cursor-pointer items-center justify-between gap-3 border-[3px] border-black bg-[#FFD600] px-3 text-sm font-black uppercase italic shadow-[4px_4px_0_#000] transition-transform hover:-translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed sm:mt-2 sm:h-13 sm:border-[4px] sm:px-4 sm:text-base sm:shadow-[6px_6px_0_#000]"
           >
-            <span className="truncate">{isLoading ? 'Creating...' : 'Create account'}</span>
+            <span className="truncate w-full">{isLoading ? 'Creating...' : 'Create account'}</span>
             <ArrowRight size={20} strokeWidth={3} className="transition-transform group-hover:translate-x-1" />
           </button>
         </div>

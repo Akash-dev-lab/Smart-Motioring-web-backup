@@ -319,15 +319,15 @@ const FooterCtaSection = ({ className = '' }) => {
 
           <div className="drop-window relative w-full max-w-[90vw] md:max-w-md bg-white border-[6px] border-black shadow-[12px_12px_0px_0px_rgba(0,0,0,1)] md:shadow-[20px_20px_0px_0px_rgba(0,0,0,1)]">
             <div className="bg-black border-b-[6px] border-black p-2 md:p-3 flex justify-between items-center text-white">
-              <WindowDots dotClassName="h-3 w-3 border-2 md:h-4 md:w-4" colors={['bg-[#FF5F56]', 'bg-[#FFBD2E]']} />
-              <span className="text-[9px] md:text-[10px] font-black italic text-green-400 tracking-widest uppercase">System_Active</span>
+              <WindowDots dotClassName="h-3 w-3 border-2 md:h-4 md:w-4 animate-dot" colors={['bg-[#FF5F56]', 'bg-[#FFBD2E]', 'bg-[#00E676]']} />
+              <span className="text-[9px] md:text-[10px] font-black italic text-green-400 tracking-widest uppercase font-['Geist',sans-serif]">System_Active</span>
             </div>
 
             <div className="p-6 md:p-10 text-center">
               <h2 className="font-black text-black leading-[0.85] text-4xl sm:text-5xl md:text-6xl uppercase italic mb-6 md:mb-8">
                 FIND <br />THE <span className="bg-[#53ff1e] text-white px-1.5 md:px-2">SIGNAL.</span>
               </h2>
-              <button className="group w-full bg-[#FFD600] border-4 border-black p-3 md:p-4 text-black font-black uppercase italic text-base md:text-xl flex items-center justify-between hover:translate-x-1 hover:-translate-y-1 hover:shadow-[10px_10px_0px_0px_rgba(0,0,0,1)] transition-all">
+              <button className="group w-full bg-[#FFFF00] cursor-pointer border-4 border-black p-3 md:p-4 text-black font-black uppercase italic text-base md:text-xl flex items-center justify-between hover:translate-x-1 hover:-translate-y-1 hover:shadow-[10px_10px_0px_0px_rgba(0,0,0,1)] transition-all">
                 <span>Launch_Console</span>
                 <Zap fill="currentColor" size={20} className="md:w-6 md:h-6" />
               </button>
@@ -345,7 +345,7 @@ const FooterCtaSection = ({ className = '' }) => {
         <div className="footer-nav grid gap-12 sm:gap-10 grid-cols-1 sm:grid-cols-2 lg:grid-cols-[1.05fr_1fr_1fr_1fr] mt-12 md:mt-24">
           <div className="space-y-6 lg:pr-6">
             <div className="bg-black text-white p-4 inline-block transform -skew-x-12 border-4 border-white shadow-[8px_8px_0px_0px_rgba(0,230,118,1)]">
-              <h3 className="text-2xl md:text-3xl font-black italic uppercase leading-none tracking-tighter">Web Trace</h3>
+              <h3 className="text-2xl md:text-3xl font-black italic uppercase leading-none tracking-tighter">Smart Monitoring</h3>
             </div>
             <p className="max-w-xs text-xs md:text-sm font-black uppercase italic leading-tight text-white">
               Production monitoring that turns alert noise into a readable incident trail.
@@ -387,7 +387,7 @@ const FooterCtaSection = ({ className = '' }) => {
                         className="group grid grid-cols-[2rem_minmax(0,1fr)_auto] md:grid-cols-[2.35rem_minmax(0,1fr)_auto] items-center gap-2 md:gap-3 border-4 border-black bg-white/95 p-2 md:p-3 text-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] md:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] transition-all hover:-translate-y-1 hover:bg-[#00E676] hover:shadow-[7px_7px_0px_0px_rgba(0,0,0,1)]"
                         href="#"
                       >
-                        <span className="grid h-8 w-8 md:h-9 md:w-9 place-items-center border-2 border-black bg-[#1E6BFF] font-black text-white text-[9px] md:text-[10px]">
+                        <span className="grid h-8 w-8 md:h-9 md:w-9 place-items-center border-2 border-black bg-[#26ff1e] font-black text-black text-[9px] md:text-[10px]">
                           {String(globalIndex).padStart(2, '0')}
                         </span>
 

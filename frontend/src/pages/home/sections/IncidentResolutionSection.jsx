@@ -23,11 +23,8 @@ const incidentPhases = [
     glyph: '!',
     eyebrow: 'Incident detected',
     title: 'Payment API Failure',
-    panelClass: 'bg-[#050709]/20 text-white shadow-[0_0_45px_rgba(0,230,118,0.08)]',
     accentClass: 'border-[#00E676] text-[#00E676]',
-    // backgroundLabelClass: 'border-[#00E676]/60 bg-[#00E676]/[0.025] text-[#00E676] bg-transparent shadow-[0_0_18px_rgba(0,230,118,0.04)]',
-    backgroundLabelOpacity: 'opacitys-[0.18] md:opacity-[0.24]',
-    // gridLine: 'rgba(0, 230, 118, 0.07)',
+    backgroundLabelOpacity: 'opacity-[0.18] md:opacity-[0.24]',
     statusClass: 'bg-[#00E676] text-[#050709]',
     meterClass: 'bg-[#00E676] w-[72%]',
     summary: 'The checkout path is timing out under live traffic.',
@@ -43,11 +40,9 @@ const incidentPhases = [
     glyph: '?',
     eyebrow: 'Trace in progress',
     title: 'From Signal To Cause',
-    panelClass: 'bg-[#050709]/95 text-white shadow-[0_0_45px_rgba(0,230,118,0.08)]',
     accentClass: 'border-[#00E676] text-[#00E676]',
     backgroundLabelClass: 'border-[#00E676]/60 bg-[#00E676]/[0.025] text-[#00E676] shadow-[0_0_18px_rgba(0,230,118,0.04)]',
     backgroundLabelOpacity: 'opacity-[0.18] md:opacity-[0.24]',
-    // gridLine: 'rgba(0, 230, 118, 0.07)',
     statusClass: 'bg-[#00E676] text-[#050709]',
     meterClass: 'bg-[#00E676] w-[86%]',
     summary: 'Logs, checks, and dependency signals collapse into one readable trail.',
@@ -63,11 +58,9 @@ const incidentPhases = [
     glyph: '+',
     eyebrow: 'Cause identified',
     title: 'Issue Identified',
-    panelClass: ' bg-[#050709]/95 text-white shadow-[0_0_45px_rgba(0,230,118,0.08)]',
     accentClass: 'border-[#00E676] text-[#00E676]',
     backgroundLabelClass: 'border-[#00E676]/60 bg-[#00E676]/[0.025] text-[#00E676] shadow-[0_0_18px_rgba(0,230,118,0.04)]',
     backgroundLabelOpacity: 'opacity-[0.18] md:opacity-[0.24]',
-    // gridLine: 'rgba(0, 230, 118, 0.07)',
     statusClass: 'bg-[#00E676] text-[#050709]',
     meterClass: 'bg-[#00E676] w-[100%]',
     summary: 'Payment API is failing because the upstream server is responding too slowly.',
@@ -90,14 +83,14 @@ const circleReveal = {
 };
 
 const TimelineRail = ({ activeId }) => (
-  <div className="mb-2 grid grid-cols-3 border-b-[3px] border-current sm:mb-0 sm:border-b-[4px]">
+  <div className="mb-2 grid grid-cols-3 border-white sm:mb-0 sm:border-b">
     {incidentPhases.map((phase, index) => (
       <div
         key={phase.id}
-        className={`flex min-h-8 items-center gap-1 border-r-2 border-current px-1.5 py-1 last:border-r-0 sm:min-h-12 sm:gap-2 sm:border-r-[3px] sm:px-4 sm:py-2 ${phase.id === activeId ? 'bg-[#00E676] text-[#050709]' : 'bg-black/35 text-white/80'
+        className={`flex min-h-8 items-center gap-1 px-1.5 py-1 last:border-r-0 sm:min-h-12 sm:gap-2 sm:border-green-400 sm:px-4 sm:py-2 ${phase.id === activeId ? 'bg-[#e6db00] text-[#050709]' : 'bg-black/35 text-white/80'
           }`}
       >
-        <span className="grid h-5 w-5 shrink-0 place-items-center border-2 border-current bg-[#00E676] font-black text-[9px] text-[#050709] sm:h-6 sm:w-6 sm:text-[10px]">
+        <span className="grid h-5 w-5 shrink-0 place-items-center border-2 border-current bg-[#e6b000] font-black text-[9px] text-[#050709] sm:h-6 sm:w-6 sm:text-[10px]">
           0{index + 1}
         </span>
         <span className="min-w-0 truncate font-black uppercase tracking-[0.04em] text-[7px] min-[380px]:text-[8px] sm:tracking-[0.12em] sm:text-[10px] md:text-xs">
@@ -111,7 +104,7 @@ const TimelineRail = ({ activeId }) => (
 const PhaseContent = ({ phase }) => (
   <div className="relative z-50 flex h-[calc(100svh-180px)] max-h-[590px] min-h-[500px] w-full max-w-[calc(100vw-1rem)] items-center justify-center sm:h-[590px] sm:max-w-[94vw] md:max-w-[980px]">
     <div
-      className={`relative z-10 flex h-full w-full flex-col overflow-hidden border-[3px] shadow-[7px_7px_0px_0px_rgba(0,0,0,1)] backdrop-blur-[2px] sm:border-[4px] sm:shadow-[10px_10px_0px_0px_rgba(0,0,0,1)] ${phase.panelClass}`}
+      className={`relative z-10 flex h-full w-full flex-col overflow-hidden shadow-[7px_7px_0px_0px_rgba(0,0,0,1)] backdrop-blur-[2px] sm:border sm:border-black sm:rounded-md sm:shadow-[10px_10px_0px_0px_rgba(0,0,0,1)] ${phase.panelClass}`}
       style={{
         backgroundImage:
           `linear-gradient(${phase.gridLine} 1px, transparent 1px), linear-gradient(90deg, ${phase.gridLine} 1px, transparent 1px)`,
@@ -119,11 +112,16 @@ const PhaseContent = ({ phase }) => (
         backgroundPosition: '-1px -1px',
       }}
     >
-      {/* <div className="grid grid-cols-[1fr_auto] items-center border-b-[3px] border-[#00E676]/70 bg-[#050709] text-[#00E676] sm:border-b-[4px]">
+      <div className="grid grid-cols-[1fr_auto] items-center border-b-[3px] border-white bg-[#050709] text-[#00E676] sm:border-b">
         <div className="flex min-w-0 items-center gap-2 px-3 py-2 sm:px-4 sm:py-3">
-          {[0, 1, 2].map((dot) => (
-            <span key={dot} className="h-2 w-2 shrink-0 rounded-full bg-[#00E676] shadow-[0_0_8px_rgba(0,230,118,0.8)] sm:h-2.5 sm:w-2.5" />
-          ))}
+          {/* Window dots */}
+          <div className="hidden items-center justify-between border-b-[4px] border-black bg-black p-3 text-white sm:flex">
+            <div className="flex gap-2">
+              <span className="h-3.5 w-3.5 rounded-full bg-[#FF5F56] animate-dot" style={{ animationDelay: '0s' }} />
+              <span className="h-3.5 w-3.5 rounded-full bg-[#FFBD2E] animate-dot" style={{ animationDelay: '0.25s' }} />
+              <span className="h-3.5 w-3.5 rounded-full bg-[#00E676] animate-dot" style={{ animationDelay: '0.5s' }} />
+            </div>
+          </div>
           <span className="ml-1 truncate font-black uppercase italic tracking-[0.16em] text-[10px] sm:text-xs">
             incident console
           </span>
@@ -131,16 +129,16 @@ const PhaseContent = ({ phase }) => (
         <span className={`m-1.5 border-2 border-[#00E676] px-2 py-1 font-black uppercase tracking-[0.14em] text-[9px] shadow-[0_0_12px_rgba(0,230,118,0.15)] sm:m-2 sm:text-[10px] ${phase.statusClass}`}>
           live
         </span>
-      </div> */}
+      </div>
 
       <TimelineRail activeId={phase.id} />
 
       <div className="relative min-h-0 flex-1 grid lg:grid-cols-[minmax(0,1.25fr)_minmax(280px,0.75fr)]">
         <div className="relative overflow-hidden border-b-[3px] border-current/70 p-2 text-left min-[380px]:p-3 sm:p-6 lg:border-b-0 lg:border-r-[4px] lg:p-8">
-          <div className="float-right ml-2 mb-1 grid h-9 w-9 rotate-6 place-items-center border-[3px] border-[#00E676] bg-[#00E676] text-[#050709] shadow-[4px_4px_0px_0px_rgba(0,230,118,0.18)] sm:ml-3 sm:mb-2 sm:h-16 sm:w-16 sm:shadow-[0_0_22px_rgba(0,230,118,0.16)]">
+          <div className="float-right ml-2 mb-1 grid h-9 w-9 rotate-6 place-items-center border-[3px] border-[#dee600] bg-[#dee600] text-[#050709] shadow-[4px_4px_0px_0px_rgba(0,230,118,0.18)] sm:ml-3 sm:mb-2 sm:h-16 sm:w-16 sm:shadow-[0_0_22px_rgba(0,230,118,0.16)]">
             <span className="font-black text-2xl leading-none sm:text-4xl">{phase.glyph}</span>
           </div>
-          <p className={`inline-flex max-w-[calc(100%-2.75rem)] border-2 px-1.5 py-0.5 font-black uppercase italic tracking-[0.08em] text-[8px] min-[380px]:text-[9px] sm:max-w-none sm:px-2 sm:py-1 sm:tracking-[0.16em] sm:text-xs ${phase.accentClass}`}>
+          <p className={`inline-flex max-w-[calc(100%-2.75rem)] text-amber-400 px-1.5 py-0.5 font-black uppercase italic tracking-[0.08em] text-[8px] min-[380px]:text-[9px] sm:max-w-none sm:px-2 sm:py-1 sm:tracking-[0.16em] sm:text-xs ${phase.accentClass}`}>
             {phase.eyebrow}
           </p>
           <h2
@@ -431,17 +429,12 @@ const IncidentResolutionSection = ({ className = '' }) => {
       const phaseLayers = phaseRefs.current.filter(Boolean);
 
       // Start with exactly one phase visible.
-      // Other phases remain mounted so GSAP can perform the
-      // circular wipe, but they are completely transparent.
       gsap.set(phaseLayers, {
         autoAlpha: 0,
-        clipPath: circleReveal.hidden,
-        transformOrigin: '50% 50%',
       });
 
       gsap.set(phaseLayers[0], {
         autoAlpha: 1,
-        clipPath: circleReveal.visible,
       });
 
       const phaseTimeline = gsap.timeline({
@@ -456,56 +449,57 @@ const IncidentResolutionSection = ({ className = '' }) => {
         },
       });
 
-      // Phase 1 -> Phase 2
-      // The new panel grows from the center while the current panel
-      // stays underneath. Once the circle has fully covered it,
-      // the previous panel is removed completely.
+      // Phase 1 -> Phase 2 (clean fade out of previous phase and fade in of next phase)
       phaseTimeline
-        .fromTo(
-          phaseLayers[1],
-          {
-            autoAlpha: 1,
-            clipPath: circleReveal.hidden,
-          },
-          {
-            clipPath: circleReveal.visible,
-            duration: 0.46,
-            ease: 'none',
-          },
-          0
-        )
-        .set(
+        .to(
           phaseLayers[0],
           {
             autoAlpha: 0,
-            clipPath: circleReveal.hidden,
+            duration: 0.35,
+            ease: 'power2.inOut',
           },
-          0.46
+          0
         )
-
-        // Keep a clean single-panel state briefly between phases.
-        .to({}, { duration: 0.08 })
-
-        // Phase 2 -> Phase 3
         .fromTo(
-          phaseLayers[2],
-          {
-            autoAlpha: 1,
-            clipPath: circleReveal.hidden,
-          },
-          {
-            clipPath: circleReveal.visible,
-            duration: 0.46,
-            ease: 'none',
-          }
-        )
-        .set(
           phaseLayers[1],
           {
             autoAlpha: 0,
-            clipPath: circleReveal.hidden,
+          },
+          {
+            autoAlpha: 1,
+            duration: 0.35,
+            ease: 'power2.inOut',
+          },
+          0.2
+        )
+
+        // Hold Phase 2
+        .to({}, { duration: 0.2 })
+
+        // Phase 2 -> Phase 3
+        .to(
+          phaseLayers[1],
+          {
+            autoAlpha: 0,
+            duration: 0.35,
+            ease: 'power2.inOut',
           }
-        );
+        )
+        .fromTo(
+          phaseLayers[2],
+          {
+            autoAlpha: 0,
+          },
+          {
+            autoAlpha: 1,
+            duration: 0.35,
+            ease: 'power2.inOut',
+          },
+          '>-0.15'
+        )
+
+        // Hold Phase 3
+        .to({}, { duration: 0.2 });
 
       gsap.from('.incident-grid-item', {
         autoAlpha: 0,
@@ -550,9 +544,8 @@ const IncidentResolutionSection = ({ className = '' }) => {
           <div
             key={phase.id}
             ref={(el) => (phaseRefs.current[index] = el)}
-            className={`absolute inset-0 flex items-center justify-center overflow-hidden px-2 text-center will-change-[clip-path] sm:px-4 ${phase.backgroundClass}`}
+            className={`absolute inset-0 flex items-center justify-center overflow-hidden px-2 text-center will-change-transform sm:px-4 ${phase.backgroundClass || ''}`}
             style={{
-              clipPath: index === 0 ? circleReveal.visible : circleReveal.hidden,
               zIndex: 24 + index,
             }}
           >

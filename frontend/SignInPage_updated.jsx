@@ -33,14 +33,14 @@ const SignInPage = () => {
   };
 
   return (
-    <div className="relative min-h-screen overflow-hidden bg-[#111317]">
+    <div className="bg-grain relative min-h-screen overflow-hidden bg-[#111317]">
 
-      {/* SAME HERO BACKGROUND */}
+      {/* HeroSection background — background only */}
       <div className="pointer-events-none absolute inset-0 z-0">
 
-        {/* Grid */}
+        {/* Grid Background */}
         <div
-          className="absolute inset-0"
+          className="absolute inset-0 z-10"
           style={{
             backgroundImage:
               'linear-gradient(to right, rgba(255,255,255,0.03) 1px, transparent 1px), linear-gradient(to bottom, rgba(255,255,255,0.03) 1px, transparent 1px)',
@@ -48,14 +48,14 @@ const SignInPage = () => {
           }}
         />
 
-        {/* Whitish glow */}
-        <div className="absolute inset-0">
+        {/* Whitish Glow Effect */}
+        <div className="absolute inset-0 z-[2]">
           <div className="absolute h-full w-full bg-white/20 blur-[300px]" />
           <div className="absolute bottom-1/4 left-1/4 h-1/3 w-1/3 rounded-full bg-white/5 blur-[100px]" />
         </div>
 
-        {/* Technical paths */}
-        <div className="absolute inset-0">
+        {/* Technical Background */}
+        <div className="pointer-events-none absolute inset-0 z-[1]">
           <TechnicalBackground />
         </div>
 
@@ -121,9 +121,9 @@ const SignInPage = () => {
               <button
                 type="submit"
                 disabled={isLoading}
-                className="group mt-1 inline-flex h-12 min-w-0 items-center cursor-pointer justify-between gap-3 border-[3px] border-black bg-green-400 px-3 text-sm font-black uppercase italic shadow-[4px_4px_0_#000] transition-transform hover:-translate-y-0.5 disabled:cursor-not-allowed disabled:opacity-50 sm:mt-2 sm:h-13 sm:border-[4px] sm:px-4 sm:text-base sm:shadow-[6px_6px_0_#000]"
+                className="group mt-1 inline-flex h-12 min-w-0 items-center justify-between gap-3 border-[3px] border-black bg-[#00E676] px-3 text-sm font-black uppercase italic shadow-[4px_4px_0_#000] transition-transform hover:-translate-y-0.5 disabled:cursor-not-allowed disabled:opacity-50 sm:mt-2 sm:h-13 sm:border-[4px] sm:px-4 sm:text-base sm:shadow-[6px_6px_0_#000]"
               >
-                <span className="truncate w-full">
+                <span className="truncate">
                   {isLoading ? 'Signing in...' : 'Sign in'}
                 </span>
 

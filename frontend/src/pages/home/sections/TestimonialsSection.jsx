@@ -272,7 +272,7 @@ const TestimonialsSection = ({ className = '' }) => {
         <div ref={trackRef} className="flex h-full w-max items-center gap-4 px-8 py-7 sm:gap-6 sm:px-12 lg:px-20">
           <div className="flex h-[min(520px,78svh)] w-[88vw] max-w-[920px] shrink-0 flex-col justify-center text-white lg:w-[820px]">
             <div>
-              <div className="inline-flex border-[3px] border-white bg-black px-3 py-1.5 font-black uppercase italic tracking-[0.18em] text-[#00E676] text-[10px] shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] sm:text-xs">
+              <div className="inline-flex bg-[#FFFF00] px-3 py-1.5 font-black uppercase italic tracking-[0.18em] text-black text-[10px] shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] sm:text-xs">
                 customer signal log
               </div>
               <h2
@@ -302,19 +302,19 @@ const TestimonialsSection = ({ className = '' }) => {
               <article
                 key={item.name}
                 ref={(el) => (cardRefs.current[index] = el)}
-                className="relative flex h-[min(390px,76svh)] w-[88vw] max-w-[540px] shrink-0 flex-col justify-between border-[4px] border-white bg-black p-4 text-white shadow-[8px_8px_0px_0px_rgba(0,0,0,1),0_0_28px_rgba(0,230,118,0.08)] sm:w-[500px] sm:p-5"
+                className="relative flex h-[min(390px,76svh)] w-[88vw] max-w-[540px] shrink-0 flex-col justify-between border-2 border-green-400 rounded-lg bg-black p-4 text-white shadow-[8px_8px_0px_0px_rgba(0,0,0,1),0_0_28px_rgba(0,230,118,0.08)] sm:w-[500px] sm:p-5"
               >
                 <div className="flex items-start justify-between gap-4">
                   <Quote className="h-9 w-9 text-[#00E676]" strokeWidth={3.4} />
-                  <div className="grid h-14 w-14 shrink-0 place-items-center border-[3px] border-white bg-black">
-                    <Icon className="h-7 w-7 text-[#00E676]" strokeWidth={3.2} />
+                  <div className="grid h-14 w-14 shrink-0 place-items-center bg-[#FFFF00]">
+                    <Icon className="h-7 w-7 text-[#000000]" />
                   </div>
                 </div>
                 <p className="mt-4 font-black uppercase italic leading-[1.02] text-[clamp(1.05rem,3.6vw,1.78rem)] sm:mt-5 sm:leading-[0.98]">
                   {item.quote}
                 </p>
                 <div className="mt-4 border-t-[3px] border-white pt-3 sm:mt-5 sm:pt-4">
-                  <span className="inline-flex border-[3px] border-white bg-black px-2 py-1 font-black uppercase tracking-[0.13em] text-[#00E676] text-[10px]">
+                  <span className="inline-flex border-[3px] border-whit bg-black px-2 py-1 font-black uppercase tracking-[0.13em] text-[#FFFF00] text-[10px]">
                     {item.metric}
                   </span>
                   <div className="mt-3 grid grid-cols-[minmax(0,1fr)_auto] items-end gap-4">
@@ -324,7 +324,7 @@ const TestimonialsSection = ({ className = '' }) => {
                         {item.role} / {item.company}
                       </p>
                     </div>
-                    <span className="shrink-0 border-2 border-white px-2 py-1 font-black text-xs">0{index + 1}</span>
+                    <span className="shrink-0 border-2 border-green-400 text-green-400 px-2 py-1 font-black text-xs">0{index + 1}</span>
                   </div>
                 </div>
               </article>

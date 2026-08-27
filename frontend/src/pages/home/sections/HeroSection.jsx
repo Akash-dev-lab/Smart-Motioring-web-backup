@@ -143,6 +143,7 @@ const HeroSection = () => {
             block truncate
             text-lg font-semibold
             leading-none
+            uppercase
             text-[#4ae176]
             sm:text-xl
           "
