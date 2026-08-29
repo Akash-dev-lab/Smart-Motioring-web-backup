@@ -27,6 +27,7 @@ body {
   background: var(--color-bg);
   color: var(--color-white);
   font-family: var(--font-body);
+  overflow-x: hidden;
 }
 
 @layer base {
@@ -137,4 +138,53 @@ body {
   backface-visibility: hidden;
   -webkit-transform: translateZ(0);
   transform: translateZ(0);
+}
+
+/* Signal animation for workflow diagrams */
+@keyframes signal {
+  0% { 
+    transform: translateY(-100%); 
+    opacity: 0; 
+  }
+  50% { 
+    opacity: 1; 
+  }
+  100% { 
+    transform: translateY(100%); 
+    opacity: 0; 
+  }
+}
+
+/* Pulse travel animation for incident pipeline */
+@keyframes pulse-travel {
+  0% { left: -50%; }
+  100% { left: 150%; }
+}
+
+/* Window traffic-light dot blink — each dot fires in sequence via animationDelay */
+@keyframes dot-blink {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1);
+    box-shadow: 0 0 0px 0px currentColor;
+  }
+  10% {
+    opacity: 0.15;
+    transform: scale(0.78);
+    box-shadow: 0 0 0px 0px currentColor;
+  }
+  25% {
+    opacity: 1;
+    transform: scale(1.12);
+    box-shadow: 0 0 6px 2px currentColor;
+  }
+  40%, 100% {
+    opacity: 1;
+    transform: scale(1);
+    box-shadow: 0 0 0px 0px currentColor;
+  }
+}
+
+.animate-dot {
+  animation: dot-blink 2.4s ease-in-out infinite;
 }

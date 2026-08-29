@@ -628,7 +628,7 @@ export function useMonitorPlaygroundAnimation({
                 });
             }
 
-            breakoutTimeline.call(triggerCircuitReaction, null, "-=0.5");
+            breakoutTimeline.call(triggerCircuitReaction, undefined, "-=0.5");
 
             // PHASE 4 — settle.
             breakoutTimeline.to(
