@@ -31,7 +31,7 @@ const HeroSection = () => {
 
   return (
     <section
-      className="bg-grain relative flex min-h-[720px] w-full flex-col items-center overflow-hidden bg-[#111317] px-3 pb-10 pt-[4.75rem] font-mono sm:min-h-[112svh] sm:px-5 sm:pb-14 sm:pt-[6rem] lg:pt-[6.25rem] max-[380px]:px-2"
+      className="bg-grain relative flex min-h-180 w-full flex-col items-center overflow-hidden bg-[#111317] px-3 pb-10 pt-[4.75rem] font-mono sm:min-h-[112svh] sm:px-5 sm:pb-14 sm:pt-[6rem] lg:pt-[6.25rem] max-[380px]:px-2"
     >
       {/* Grid Background */}
       <div
@@ -55,7 +55,7 @@ const HeroSection = () => {
       </div>
 
       <div
-        className="pointer-events-none absolute inset-0 z-[1]"
+        className="pointer-events-none absolute inset-0 z-1"
         data-scroll
         data-scroll-speed="0.2"
       >
@@ -82,7 +82,7 @@ const HeroSection = () => {
       grid-cols-[1fr_auto]
       items-center gap-2
       rounded-[1.1rem]
-      border border-white/[0.10]
+      border border-white/10
       bg-[#071326]/45
       px-2.5 py-1.5
       shadow-[0_8px_35px_rgba(0,0,0,0.16)]
@@ -159,7 +159,7 @@ const HeroSection = () => {
                 className="
             mt-1 hidden truncate
             text-[9px] font-medium
-            uppercase tracking-[0.05em]
+            uppercase tracking-wider
             text-[#8e9ab0]
             sm:block
           "
@@ -180,7 +180,7 @@ const HeroSection = () => {
             className="
         hidden items-center
         rounded-full
-        border border-white/[0.09]
+        border border-white/9
         bg-[#081326]/35
         p-1
         shadow-[inset_0_1px_0_rgba(255,255,255,0.04)]
@@ -197,10 +197,10 @@ const HeroSection = () => {
             rounded-full
             px-4 py-2
             text-xs font-medium
-            uppercase tracking-[0.05em]
+            uppercase tracking-wider
             text-[#aab4c5]
             transition-all duration-300
-            hover:bg-white/[0.06]
+            hover:bg-white/6
             hover:text-[#eef1f7]
           "
                 style={{
@@ -228,14 +228,14 @@ const HeroSection = () => {
           items-center justify-center
           gap-1.5
           rounded-xl
-          border border-white/[0.12]
+          border border-white/12
           bg-white/[0.035]
           px-2.5
           text-[11px] font-medium
           text-[#e1e6ee]
           backdrop-blur-md
           transition-all duration-300
-          hover:border-white/[0.20]
+          hover:border-white/20
           hover:bg-white/[0.07]
           hover:text-white
           min-[360px]:px-3
@@ -302,7 +302,7 @@ const HeroSection = () => {
 
       {/* Main Hero Content - Two Column Layout */}
       <main
-        className="relative z-10 mx-auto flex w-full max-w-7xl flex-grow items-center justify-center px-6 py-10"
+        className="relative z-10 mx-auto flex w-full max-w-7xl grow items-center justify-center px-6 py-10"
         data-scroll
         data-scroll-speed="0.6"
       >
@@ -312,7 +312,7 @@ const HeroSection = () => {
             <div className="flex items-center gap-2 rounded-full border border-[#3b4a3d] bg-[#1a1c1f] px-3 py-1">
               <span className="h-2 w-2 animate-pulse rounded-full bg-[#ffe0bc]"></span>
               <span
-                className="text-xs font-medium uppercase tracking-[0.05em] text-[#bacbb9]"
+                className="text-xs font-medium uppercase tracking-wider text-[#bacbb9]"
                 style={{
                   fontFamily: "JetBrains Mono, monospace",
                   letterSpacing: "0.05em",
@@ -358,7 +358,7 @@ const HeroSection = () => {
               <div className="flex items-center gap-2">
                 <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-[#75ff9e]"></span>
                 <span
-                  className="text-xs font-medium uppercase tracking-[0.05em] text-[#bacbb9]"
+                  className="text-xs font-medium uppercase tracking-wider text-[#bacbb9]"
                   style={{
                     fontFamily: "JetBrains Mono, monospace",
                     letterSpacing: "0.05em",
@@ -373,7 +373,7 @@ const HeroSection = () => {
           {/* Right Column: Dashboard UI */}
           <div
             className="
-    relative flex h-[500px] w-full flex-col overflow-hidden
+    relative flex h-125 w-full flex-col overflow-hidden
     rounded-[18px]
     border border-transparent
     bg-transparent
@@ -388,8 +388,8 @@ const HeroSection = () => {
               className="
       pointer-events-none absolute inset-0 z-0
       rounded-[18px]
-      p-[1px]
-      bg-gradient-to-br
+      p-px
+      bg-linear-to-br
       from-[#060a10]
       via-[#2d5e26]
       to-[#163720]
