@@ -35,19 +35,19 @@ export const SidebarContent = ({ activeView, compact = false, onClose, onOpen, o
           className={`flex min-w-0 items-center gap-3 ${compact ? 'justify-center' : 'cursor-default'}`}
           aria-label={compact ? 'Open sidebar' : 'Drishyam Monitor OS'}
         >
-          <span className="grid h-11 w-11 shrink-0 place-items-center rounded-2xl border-[3px] border-black bg-[#FFD600] font-black italic text-black shadow-[4px_4px_0_#0F172A]">
-            D
+          <span className="grid h-11 w-11 shrink-0 place-items-center rounded-2xl border-[3px] border-black bg-[#2fff00] font-black italic text-black shadow-[4px_4px_0_#0F172A]">
+            S
           </span>
           {!compact && (
-            <span className="min-w-0 text-black">
-              <span className="block truncate text-lg font-black uppercase italic leading-none">Drishyam</span>
-              <span className="text-xs font-bold uppercase tracking-[0.18em] text-black/55">Monitor OS</span>
+            <span className="min-w-0 text-left text-white">
+              <span className="block text-base font-black uppercase italic leading-tight">Smart</span>
+              <span className="block text-base font-black uppercase italic leading-tight">Monitoring</span>
             </span>
           )}
         </button>
         {!compact && (
           <button
-            className="grid h-10 w-10 place-items-center rounded-xl border-[3px] border-black bg-white text-black shadow-[3px_3px_0_#0F172A]"
+            className="grid h-10 w-10 place-items-center rounded-xl border-[3px] border-black bg-white hover:bg-red-500 text-black hover:text-white cursor-pointer shadow-[3px_3px_0_#0F172A]"
             onClick={onClose}
             aria-label="Close sidebar"
           >
@@ -62,13 +62,11 @@ export const SidebarContent = ({ activeView, compact = false, onClose, onOpen, o
             key={id}
             type="button"
             onClick={() => onViewChange(id)}
-            className={`flex h-12 items-center rounded-2xl border-[3px] border-black font-black ${
-              compact ? 'justify-center px-0' : 'gap-3 px-3'
-            } ${
-              activeView === id
-                ? 'bg-[#1E6BFF] text-white shadow-[4px_4px_0_#0F172A]'
+            className={`flex h-12 items-center cursor-pointer rounded-2xl border-[3px] border-black font-black ${compact ? 'justify-center px-0' : 'gap-3 px-3'
+              } ${activeView === id
+                ? 'bg-[#070707] text-white shadow-[4px_4px_0_#0F172A]'
                 : 'bg-[#FDFBF7] text-black hover:bg-[#FFD600]'
-            }`}
+              }`}
             title={label}
           >
             <Icon size={19} strokeWidth={3} />
@@ -82,9 +80,8 @@ export const SidebarContent = ({ activeView, compact = false, onClose, onOpen, o
           type="button"
           onClick={handleLogout}
           disabled={isLoggingOut}
-          className={`flex h-12 w-full items-center rounded-2xl border-[3px] border-black font-black ${
-            compact ? 'justify-center px-0' : 'gap-3 px-3'
-          } bg-red-500 text-white shadow-[4px_4px_0_#0F172A] hover:bg-red-600 disabled:cursor-not-allowed disabled:opacity-60`}
+          className={`flex h-12 w-full items-center rounded-2xl border-[3px] border-black font-black ${compact ? 'justify-center px-0' : 'gap-3 px-3'
+            } bg-red-500 text-white shadow-[4px_4px_0_#0F172A] hover:bg-red-600 disabled:cursor-not-allowed disabled:opacity-60`}
           title="Logout"
         >
           <LogOut size={19} strokeWidth={3} />
@@ -112,11 +109,10 @@ export const MobileNav = ({ activeView, onViewChange }) => (
         key={id}
         type="button"
         onClick={() => onViewChange(id)}
-        className={`grid min-w-0 place-items-center gap-1 rounded-xl border-2 border-black px-1 py-2 ${
-          activeView === id
-            ? 'bg-[#00E676] text-black shadow-[2px_2px_0_#0F172A]'
-            : 'bg-[#EAF1FF] text-slate-950 hover:bg-[#FFD600] hover:text-black'
-        }`}
+        className={`grid min-w-0 place-items-center gap-1 rounded-xl border-2 border-black px-1 py-2 ${activeView === id
+          ? 'bg-[#00E676] text-black shadow-[2px_2px_0_#0F172A]'
+          : 'bg-[#EAF1FF] text-slate-950 hover:bg-[#FFD600] hover:text-black'
+          }`}
         aria-label={label}
         title={label}
       >

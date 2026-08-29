@@ -2,27 +2,27 @@ import { Database, RefreshCcw, ServerCog, Settings2 } from 'lucide-react';
 import { formatInterval } from '../dashboardUtils';
 
 const SettingCard = ({ icon: Icon, label, value, note }) => (
-  <article className="rounded-2xl border-[3px] border-black bg-white p-4 shadow-[5px_5px_0_#0F172A]">
+  <article className="rounded border border-white/10 bg-[#080B0D] p-5 shadow-[6px_6px_0_#0F172A] transition-all duration-200 hover:border-[#00E676] hover:shadow-[0_0_12px_rgba(0,230,118,0.2),6px_6px_0_#0F172A]">
     <div className="flex items-start gap-3">
-      <span className="grid h-10 w-10 shrink-0 place-items-center rounded-xl border-[3px] border-black bg-[#BFE8FF] text-blue-900">
-        <Icon size={19} strokeWidth={3} />
+      <span className="grid h-10 w-10 shrink-0 place-items-center rounded border border-white/10 bg-[#111416] text-[#75ff9e]">
+        <Icon size={18} />
       </span>
       <div className="min-w-0">
-        <p className="text-[10px] font-black uppercase tracking-[0.12em] text-slate-400">{label}</p>
-        <p className="mt-1 break-words text-base font-black text-slate-950">{value}</p>
-        <p className="mt-2 text-sm font-medium leading-6 text-slate-500">{note}</p>
+        <p className="font-mono text-[10px] uppercase tracking-wider text-[#B0B3B8]">{label}</p>
+        <p className="mt-1 break-words font-mono text-sm font-bold text-[#F5F5F5]">{value}</p>
+        <p className="mt-2 text-xs text-[#B0B3B8]">{note}</p>
       </div>
     </div>
   </article>
 );
 
 const SettingsSection = ({ activeCount, apiBaseUrl, averageInterval, isLoadingMonitors, monitors, onCreate, onRefresh, pausedCount }) => (
-  <section className="grid min-w-0 gap-5">
-    <div className="rounded-2xl border-[3px] border-black bg-white p-4 shadow-[6px_6px_0_#0F172A]">
+  <section className="grid min-w-0 gap-5 pb-8 font-['Geist',sans-serif]">
+    <div className="rounded border border-white/10 bg-[#080B0D] p-6 shadow-[6px_6px_0_#0F172A] transition-all duration-200 hover:border-[#00E676] hover:shadow-[0_0_12px_rgba(0,230,118,0.2),6px_6px_0_#0F172A]">
       <div className="grid gap-4 md:grid-cols-[minmax(0,1fr)_auto] md:items-center">
         <div>
-          <h2 className="text-lg font-black text-slate-950">Backend settings</h2>
-          <p className="mt-1 text-sm font-medium leading-6 text-slate-500">
+          <h2 className="text-xl font-bold text-[#F5F5F5]">Backend settings</h2>
+          <p className="mt-1 text-sm text-[#B0B3B8]">
             This backend currently exposes monitor records, logs, AI insights and dashboard summaries. Editable settings are the monitor records themselves.
           </p>
         </div>
@@ -30,9 +30,9 @@ const SettingsSection = ({ activeCount, apiBaseUrl, averageInterval, isLoadingMo
           type="button"
           onClick={onRefresh}
           disabled={isLoadingMonitors}
-          className="inline-flex h-11 items-center justify-center gap-2 rounded-xl border-[3px] border-black bg-[#FFD600] px-4 text-sm font-black text-black shadow-[3px_3px_0_#0F172A] hover:bg-[#00E676] disabled:cursor-not-allowed disabled:opacity-60"
+          className="cursor-pointer inline-flex h-10 items-center justify-center gap-2 rounded border border-[#00E676] bg-transparent px-4 font-mono text-xs text-[#00E676] transition-all duration-200 hover:bg-[#00E676]/10 hover:shadow-[0_0_8px_rgba(0,230,118,0.2)] disabled:cursor-not-allowed disabled:opacity-50"
         >
-          <RefreshCcw className={isLoadingMonitors ? 'animate-spin' : ''} size={17} strokeWidth={3} />
+          <RefreshCcw className={isLoadingMonitors ? 'animate-spin' : ''} size={15} />
           Refresh backend
         </button>
       </div>
@@ -65,40 +65,40 @@ const SettingsSection = ({ activeCount, apiBaseUrl, averageInterval, isLoadingMo
       />
     </div>
 
-    <div className="rounded-2xl border-[3px] border-black bg-white p-4 shadow-[6px_6px_0_#0F172A]">
+    <div className="rounded border border-white/10 bg-[#080B0D] p-6 shadow-[6px_6px_0_#0F172A] transition-all duration-200 hover:border-[#00E676] hover:shadow-[0_0_12px_rgba(0,230,118,0.2),6px_6px_0_#0F172A]">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <h3 className="font-black text-slate-950">Monitor configuration</h3>
-          <p className="mt-1 text-sm font-medium text-slate-500">
+          <h3 className="font-bold text-[#F5F5F5]">Monitor configuration</h3>
+          <p className="mt-1 text-sm text-[#B0B3B8]">
             Add or edit backend monitor records to change URL, method, interval and active state.
           </p>
         </div>
         <button
           type="button"
           onClick={onCreate}
-          className="rounded-xl border-[3px] border-black bg-[#00E676] px-4 py-2 text-sm font-black text-black shadow-[3px_3px_0_#0F172A] hover:bg-[#FFD600]"
+          className="cursor-pointer rounded border border-[#00E676] bg-transparent px-4 py-2 font-mono text-xs text-[#00E676] transition-all duration-200 hover:bg-[#00E676]/10 hover:shadow-[0_0_8px_rgba(0,230,118,0.2)]"
         >
           New monitor
         </button>
       </div>
 
-      <div className="mt-4 grid gap-3">
+      <div className="mt-5 grid gap-3">
         {monitors.length === 0 ? (
-          <div className="rounded-xl border-[3px] border-dashed border-slate-300 bg-[#FDFBF7] p-4 text-sm font-black text-slate-500">
+          <div className="rounded border border-dashed border-white/10 bg-[#111416] p-4 font-mono text-xs text-[#B0B3B8]">
             No backend monitor records yet.
           </div>
         ) : (
           monitors.slice(0, 5).map((monitor) => (
-            <div key={monitor.id} className="grid gap-2 rounded-xl border-[3px] border-black bg-[#FDFBF7] p-3 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-center">
+            <div key={monitor.id} className="grid gap-2 rounded border border-white/10 bg-[#111416] p-4 transition-colors duration-200 hover:border-white/20 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-center">
               <div className="min-w-0">
-                <p className="truncate font-black text-slate-950">{monitor.name}</p>
-                <p className="mt-1 break-all text-sm font-bold text-slate-500">{monitor.method} {monitor.url}</p>
+                <p className="truncate font-bold text-[#F5F5F5]">{monitor.name}</p>
+                <p className="mt-1 break-all font-mono text-xs text-[#B0B3B8]">{monitor.method} {monitor.url}</p>
               </div>
-              <div className="flex flex-wrap gap-2 text-[10px] font-black uppercase tracking-[0.12em]">
-                <span className={`rounded-full border px-2.5 py-1 ${monitor.active ? 'border-emerald-300 bg-emerald-50 text-emerald-700' : 'border-slate-300 bg-slate-100 text-slate-600'}`}>
+              <div className="flex flex-wrap gap-2">
+                <span className={`rounded border px-2.5 py-1 font-mono text-[10px] uppercase ${monitor.active ? 'border-[#00E676] bg-[#00E676]/10 text-[#75ff9e]' : 'border-white/20 bg-white/5 text-[#B0B3B8]'}`}>
                   {monitor.active ? 'Active' : 'Paused'}
                 </span>
-                <span className="rounded-full border border-blue-200 bg-blue-50 px-2.5 py-1 text-blue-700">
+                <span className="rounded border border-white/10 bg-[#080B0D] px-2.5 py-1 font-mono text-[10px] text-[#B0B3B8]">
                   {formatInterval(monitor.interval)}
                 </span>
               </div>

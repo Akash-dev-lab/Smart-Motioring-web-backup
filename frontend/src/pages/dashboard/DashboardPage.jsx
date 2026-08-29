@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, useParams } from 'react-router-dom';
-import { Plus, RefreshCcw } from 'lucide-react';
+import { GripVertical, Plus, RefreshCcw } from 'lucide-react';
 import IncidentsSection from './components/IncidentsSection';
 import MonitorDialog from './components/MonitorDialog';
 import MonitorsSection from './components/MonitorsSection';
@@ -9,6 +9,7 @@ import { MobileNav, SidebarContent } from './components/Navigation';
 import OverviewSection from './components/OverviewSection';
 import SettingsSection from './components/SettingsSection';
 import StatusPagesSection from './components/StatusPagesSection';
+import TechnicalBackground from '../home/sections/TechnicalBackground';
 import { emptyMonitorForm, navItems } from './dashboardData';
 import { getApiBaseUrl } from '../../services/dashboardApi';
 import {
@@ -37,8 +38,48 @@ const DashboardPage = () => {
   const { view } = useParams();
   const [query, setQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
-  const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [sidebarWidth, setSidebarWidth] = useState(280);
+  const [isResizing, setIsResizing] = useState(false);
   const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
+
+  const startResizing = useCallback((e) => {
+    e.preventDefault();
+    setIsResizing(true);
+  }, []);
+
+  const stopResizing = useCallback(() => {
+    setIsResizing(false);
+  }, []);
+
+  const resize = useCallback(
+    (e) => {
+      if (isResizing) {
+        const newWidth = e.clientX;
+        if (newWidth >= 80 && newWidth <= 600) {
+          setSidebarWidth(newWidth);
+        }
+      }
+    },
+    [isResizing]
+  );
+
+  useEffect(() => {
+    if (isResizing) {
+      window.addEventListener('mousemove', resize);
+      window.addEventListener('mouseup', stopResizing);
+      document.body.style.cursor = 'col-resize';
+      document.body.style.userSelect = 'none';
+    } else {
+      document.body.style.cursor = '';
+      document.body.style.userSelect = '';
+    }
+    return () => {
+      window.removeEventListener('mousemove', resize);
+      window.removeEventListener('mouseup', stopResizing);
+      document.body.style.cursor = '';
+      document.body.style.userSelect = '';
+    };
+  }, [isResizing, resize, stopResizing]);
   const [editingId, setEditingId] = useState(null);
   const [createForm, setCreateForm] = useState(emptyMonitorForm);
   const [editForm, setEditForm] = useState(emptyMonitorForm);
@@ -220,12 +261,32 @@ const DashboardPage = () => {
 
   return (
     <main
-      className="h-screen overflow-hidden bg-[#1E6BFF] font-sans text-slate-950"
-      style={{
-        backgroundImage: 'linear-gradient(rgba(255,255,255,0.18) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.18) 1px, transparent 1px)',
-        backgroundSize: '34px 34px',
-      }}
+      className="relative h-screen overflow-hidden bg-[#111317] font-sans text-slate-950"
     >
+      {/* Background Layers */}
+      <div className="pointer-events-none absolute inset-0 z-0 overflow-hidden">
+        {/* Grid Background */}
+        <div
+          className="absolute inset-0"
+          style={{
+            backgroundImage:
+              'linear-gradient(to right, rgba(255,255,255,0.03) 1px, transparent 1px), linear-gradient(to bottom, rgba(255,255,255,0.03) 1px, transparent 1px)',
+            backgroundSize: '40px 40px',
+          }}
+        />
+
+        {/* Whitish Glow Effect in Middle */}
+        <div className="absolute inset-0">
+          <div className="absolute h-full w-full bg-white/20 blur-[300px]" />
+          <div className="absolute bottom-1/4 left-1/4 h-1/3 w-1/3 rounded-full bg-white/5 blur-[100px]" />
+        </div>
+
+        {/* Technical Background */}
+        <div className="absolute inset-0">
+          <TechnicalBackground />
+        </div>
+      </div>
+
       {mobileSidebarOpen && (
         <div className="fixed inset-0 z-40 bg-black/45 lg:hidden" onClick={() => setMobileSidebarOpen(false)} />
       )}
@@ -243,19 +304,40 @@ const DashboardPage = () => {
 
       <MobileNav activeView={activeView} onViewChange={selectView} />
 
-      <div className={`grid h-screen overflow-hidden transition-[grid-template-columns] duration-300 ${sidebarOpen ? 'lg:grid-cols-[280px_minmax(0,1fr)]' : 'lg:grid-cols-[92px_minmax(0,1fr)]'}`}>
-        <aside className="hidden h-screen overflow-hidden border-r-4 border-black bg-[#00E676] p-5 shadow-[8px_0_0_#0A0C10] lg:block">
+      <div className="relative z-10 flex h-screen overflow-hidden">
+        <aside
+          style={{ width: `${sidebarWidth}px` }}
+          className={`relative hidden h-screen shrink-0 overflow-hidden border-r-4 border-black bg-[#2a2b2b] p-5 shadow-[8px_0_0_#0A0C10] lg:block ${isResizing ? '' : 'transition-[width] duration-150'}`}
+        >
           <SidebarContent
             activeView={activeView}
-            compact={!sidebarOpen}
-            onClose={() => setSidebarOpen(false)}
-            onOpen={() => setSidebarOpen(true)}
+            compact={sidebarWidth < 180}
+            onClose={() => setSidebarWidth(88)}
+            onOpen={() => setSidebarWidth(280)}
             onViewChange={selectView}
           />
+
+          {/* Draggable border resize handle - Always Visible */}
+          <div
+            onMouseDown={startResizing}
+            onDoubleClick={() => setSidebarWidth(sidebarWidth < 180 ? 280 : 88)}
+            className="group absolute -right-3 top-0 z-50 flex h-full w-6 cursor-col-resize items-center justify-center"
+            title="Drag left or right to resize sidebar (double-click to toggle)"
+          >
+            {/* Center Permanently Visible Grip Pill */}
+            <div
+              className={`flex h-11 w-4.5 items-center justify-center rounded-full border-2 border-black transition-all ${isResizing
+                ? 'bg-[#FFD600] scale-110 shadow-[2px_2px_0_#000]'
+                : 'bg-[#00E676] shadow-[2px_2px_0_#000] hover:bg-[#FFD600] hover:scale-110'
+                }`}
+            >
+              <GripVertical size={13} strokeWidth={3} className="text-black" />
+            </div>
+          </div>
         </aside>
 
-        <section className="flex h-screen min-w-0 flex-col overflow-hidden">
-          <header className="z-30 shrink-0 border-b-4 border-black bg-white/92 px-4 py-4 backdrop-blur sm:px-6 lg:px-8">
+        <section className="flex h-screen min-w-0 flex-1 flex-col overflow-hidden">
+          <header className="z-30 shrink-0 border-b-4 border-black bg-[#2a2b2b] px-4 py-4 backdrop-blur sm:px-6 lg:px-8">
             <div className="flex flex-wrap items-center justify-between gap-3">
               <div className="flex items-center gap-3">
                 <button
@@ -266,14 +348,14 @@ const DashboardPage = () => {
                   D
                 </button>
                 <div>
-                  <p className="text-xs font-black uppercase tracking-[0.18em] text-[#1E6BFF]">Command Center</p>
-                  <h1 className="mt-1 text-xl font-black tracking-tight text-slate-950 sm:text-2xl">{activeNavItem?.label || 'Overview'}</h1>
+                  <p className="text-xs font-black uppercase tracking-[0.18em] text-[#00E676]">Command Center</p>
+                  <h1 className="mt-1 text-xl font-black tracking-tight text-white/85 sm:text-2xl">{activeNavItem?.label || 'Overview'}</h1>
                 </div>
               </div>
 
               <div className="flex items-center gap-2">
                 <button
-                  className="grid h-10 w-10 place-items-center rounded-xl border-[3px] border-black bg-white text-slate-950 shadow-[3px_3px_0_#0F172A] hover:bg-[#FFD600] disabled:cursor-not-allowed disabled:opacity-60"
+                  className="grid h-10 w-10 place-items-center rounded-xl border-[3px] cursor-pointer border-black bg-white text-slate-950 shadow-[3px_3px_0_#0F172A] hover:bg-[#00E676] disabled:cursor-not-allowed disabled:opacity-60"
                   onClick={loadMonitors}
                   disabled={isLoadingMonitors}
                   aria-label="Refresh dashboard"

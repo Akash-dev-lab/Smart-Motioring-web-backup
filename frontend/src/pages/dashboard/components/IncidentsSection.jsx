@@ -16,31 +16,31 @@ import { formatInterval } from '../dashboardUtils';
 const getHealthStyle = (analytics) => {
   if (!analytics || analytics.totalChecks === 0) {
     return {
-      badge: 'border-slate-300 bg-slate-100 text-slate-600',
-      dot: 'bg-slate-300',
+      badge: 'border-white/20 bg-white/5 text-[#B0B3B8]',
+      dot: 'bg-white/20',
       label: 'NO LOGS',
     };
   }
 
   if (analytics.status === 'DOWN' || analytics.failures > 0) {
     return {
-      badge: 'border-red-300 bg-red-50 text-red-700',
-      dot: 'bg-red-500',
+      badge: 'border-[#ffb4ab]/40 bg-[#93000a]/20 text-[#ffb4ab]',
+      dot: 'bg-[#ffb4ab] shadow-[0_0_6px_rgba(255,180,171,0.8)]',
       label: analytics.status,
     };
   }
 
   return {
-    badge: 'border-emerald-300 bg-emerald-50 text-emerald-700',
-    dot: 'bg-[#00E676]',
+    badge: 'border-[#00E676] bg-[#00E676]/10 text-[#75ff9e]',
+    dot: 'bg-[#00E676] shadow-[0_0_6px_rgba(0,230,118,0.8)]',
     label: analytics.status,
   };
 };
 
-const MetricTile = ({ label, value, tone = 'bg-[#FDFBF7]' }) => (
-  <div className={`rounded-xl border-2 border-black px-4 py-3 ${tone}`}>
-    <p className="text-[11px] font-black uppercase tracking-[0.08em] text-slate-500">{label}</p>
-    <p className="mt-1 text-base font-black text-slate-950">{value}</p>
+const MetricTile = ({ label, value, tone = 'bg-[#111416]' }) => (
+  <div className={`rounded border border-white/10 px-4 py-3 ${tone}`}>
+    <p className="font-mono text-xs uppercase tracking-wider text-[#B0B3B8]">{label}</p>
+    <p className="mt-1 font-mono text-lg font-bold text-[#F5F5F5]">{value}</p>
   </div>
 );
 
@@ -69,7 +69,7 @@ const DonutChart = ({ failures, success, total }) => {
   return (
     <div className="relative mx-auto h-36 w-36">
       <svg viewBox="0 0 120 120" role="img" aria-label="Success and failure donut chart" className="h-full w-full -rotate-90">
-        <circle cx="60" cy="60" r={radius} fill="none" stroke="#E5E7EB" strokeWidth="18" />
+        <circle cx="60" cy="60" r={radius} fill="none" stroke="rgba(255,255,255,0.05)" strokeWidth="16" />
         <circle
           cx="60"
           cy="60"
@@ -78,24 +78,24 @@ const DonutChart = ({ failures, success, total }) => {
           stroke="#00E676"
           strokeDasharray={`${successDash} ${circumference - successDash}`}
           strokeLinecap="round"
-          strokeWidth="18"
+          strokeWidth="16"
         />
         <circle
           cx="60"
           cy="60"
           r={radius}
           fill="none"
-          stroke="#FF3B30"
+          stroke="#ffb4ab"
           strokeDasharray={`${failureDash} ${circumference - failureDash}`}
           strokeDashoffset={-successDash}
           strokeLinecap="round"
-          strokeWidth="18"
+          strokeWidth="16"
         />
       </svg>
       <div className="absolute inset-0 grid place-items-center text-center">
         <div>
-          <p className="text-2xl font-black text-slate-950">{total ? Math.round(failureRate * 100) : 0}%</p>
-          <p className="text-[10px] font-black uppercase tracking-[0.12em] text-slate-400">fail</p>
+          <p className="font-mono text-2xl font-bold text-[#F5F5F5]">{total ? Math.round(failureRate * 100) : 0}%</p>
+          <p className="font-mono text-[10px] font-bold uppercase tracking-wider text-[#B0B3B8]">FAIL</p>
         </div>
       </div>
     </div>
@@ -108,17 +108,17 @@ const LatencyBarChart = ({ trend }) => {
 
   if (points.length === 0) {
     return (
-      <div className="grid h-44 place-items-center rounded-xl border-2 border-dashed border-slate-300 bg-white text-xs font-black uppercase tracking-[0.12em] text-slate-400">
+      <div className="grid h-44 place-items-center rounded border border-dashed border-white/10 bg-[#111416] font-mono text-xs uppercase tracking-wider text-[#B0B3B8]">
         No latency bars
       </div>
     );
   }
 
   return (
-    <div className="rounded-xl border-2 border-black bg-white p-4">
+    <div className="rounded border border-white/10 bg-[#111416] p-4">
       <div className="mb-3 flex items-center justify-between">
-        <p className="text-xs font-black uppercase tracking-[0.08em] text-slate-600">Latency bars</p>
-        <p className="text-xs font-black uppercase tracking-[0.08em] text-slate-500">{maxLatency}ms max</p>
+        <p className="font-mono text-xs uppercase tracking-wider text-[#B0B3B8]">Latency bars</p>
+        <p className="font-mono text-xs uppercase tracking-wider text-[#75ff9e]">{maxLatency}ms max</p>
       </div>
       <div className="grid h-40 grid-flow-col items-end gap-2">
         {points.map((point, index) => {
@@ -127,14 +127,17 @@ const LatencyBarChart = ({ trend }) => {
 
           return (
             <div key={`${point.time}-${index}`} className="grid h-full min-w-0 grid-rows-[minmax(0,1fr)_18px] gap-2">
-              <div className="flex min-h-0 items-end rounded-lg border-2 border-black bg-[#FDFBF7] p-1">
+              <div className="flex min-h-0 items-end rounded border border-white/5 bg-[#080B0D] p-1">
                 <div
-                  className={`w-full rounded-md border border-black ${isSlow ? 'bg-[#FF3B30]' : 'bg-[#1E6BFF]'}`}
+                  className={`w-full rounded-sm transition-all ${isSlow
+                      ? 'bg-[#ffb4ab] shadow-[0_0_6px_rgba(255,180,171,0.5)]'
+                      : 'bg-[#00E676] shadow-[0_0_6px_rgba(0,230,118,0.4)]'
+                    }`}
                   title={`${point.time}: ${point.latency}ms`}
                   style={{ height: `${height}%` }}
                 />
               </div>
-              <span className="truncate text-center text-[9px] font-black text-slate-400">{point.time}</span>
+              <span className="truncate text-center font-mono text-[9px] text-[#B0B3B8]">{point.time}</span>
             </div>
           );
         })}
@@ -149,7 +152,7 @@ const TrendChart = ({ trend }) => {
 
   if (points.length === 0) {
     return (
-      <div className="grid min-h-[180px] place-items-center rounded-xl border-2 border-dashed border-slate-300 bg-[#FDFBF7] text-xs font-black uppercase tracking-[0.12em] text-slate-400">
+      <div className="grid min-h-[180px] place-items-center rounded border border-dashed border-white/10 bg-[#111416] font-mono text-xs uppercase tracking-wider text-[#B0B3B8]">
         No trend logs
       </div>
     );
@@ -161,23 +164,23 @@ const TrendChart = ({ trend }) => {
   }));
 
   return (
-    <div className="rounded-xl border-2 border-black bg-[#FDFBF7] p-4">
+    <div className="rounded border border-white/10 bg-[#111416] p-4">
       <div className="mb-3 flex items-center justify-between gap-2">
         <div className="flex items-center gap-2">
-          <span className="grid h-9 w-9 place-items-center rounded-xl border-2 border-black bg-[#BFE8FF]">
-            <TrendingUp size={18} strokeWidth={3} />
+          <span className="grid h-8 w-8 place-items-center rounded border border-white/10 bg-[#080B0D] text-[#75ff9e]">
+            <TrendingUp size={16} />
           </span>
           <div>
-            <p className="text-xs font-black uppercase tracking-[0.08em] text-slate-600">Latency trend</p>
-            <p className="text-sm font-black text-slate-950">{points.length} check buckets tracked</p>
+            <p className="font-mono text-xs uppercase tracking-wider text-[#B0B3B8]">Latency trend</p>
+            <p className="font-bold text-sm text-[#F5F5F5]">{points.length} check buckets tracked</p>
           </div>
         </div>
-        <span className="rounded-full border-2 border-black bg-white px-2.5 py-1 text-[10px] font-black uppercase text-slate-600">
+        <span className="rounded border border-white/10 bg-[#080B0D] px-2.5 py-1 font-mono text-[10px] uppercase text-[#75ff9e]">
           {maxLatency}ms peak
         </span>
       </div>
-      <UplotLineChart ariaLabel="Latency trend chart" color="#E11D48" height={164} points={chartPoints} valueSuffix="ms" />
-      <div className="mt-3 flex items-center justify-between gap-2 text-xs font-black uppercase tracking-[0.08em] text-slate-500">
+      <UplotLineChart ariaLabel="Latency trend chart" color="#00E676" height={164} points={chartPoints} valueSuffix="ms" />
+      <div className="mt-3 flex items-center justify-between gap-2 font-mono text-[10px] uppercase tracking-wider text-[#B0B3B8]">
         <span>{points[0]?.time}</span>
         <span>latest checks</span>
         <span>{points.at(-1)?.time}</span>
@@ -194,39 +197,39 @@ const ReliabilityPanel = ({ analytics }) => {
   const successRate = total ? 100 - failureRate : 0;
 
   return (
-    <div className="grid gap-4 rounded-xl border-2 border-black bg-[#FDFBF7] p-4">
+    <div className="grid gap-4 rounded border border-white/10 bg-[#111416] p-4">
       <div className="flex items-center gap-2">
-        <span className="grid h-9 w-9 place-items-center rounded-xl border-2 border-black bg-[#FFD600]">
-          <Gauge size={18} strokeWidth={3} />
+        <span className="grid h-8 w-8 place-items-center rounded border border-white/10 bg-[#080B0D] text-[#00E676]">
+          <Gauge size={16} />
         </span>
         <div>
-          <p className="text-xs font-black uppercase tracking-[0.08em] text-slate-600">Reliability pie</p>
-          <p className="text-sm font-black text-slate-950">{total ? `${failureRate}% failing` : 'No checks yet'}</p>
+          <p className="font-mono text-xs uppercase tracking-wider text-[#B0B3B8]">Reliability ratio</p>
+          <p className="font-mono text-sm font-bold text-[#F5F5F5]">{total ? `${failureRate}% failing` : 'No checks yet'}</p>
         </div>
       </div>
 
       <DonutChart failures={failures} success={success} total={total} />
 
       <div className="grid grid-cols-2 gap-2">
-        <MetricTile label="Passed" value={success} tone="bg-emerald-50" />
-        <MetricTile label="Failed" value={failures} tone="bg-red-50" />
+        <MetricTile label="Passed" value={success} tone="bg-[#080B0D]" />
+        <MetricTile label="Failed" value={failures} tone="bg-[#080B0D]" />
       </div>
 
-      <div className="overflow-hidden rounded-xl border-2 border-black bg-white">
-        <div className="flex h-8 w-full">
-          <div className="bg-[#00E676]" style={{ width: `${successRate}%` }} />
-          <div className="bg-[#FF3B30]" style={{ width: `${failureRate}%` }} />
-          {!total && <div className="w-full bg-slate-100" />}
+      <div className="h-3 w-full overflow-hidden rounded-full border border-white/10 bg-[#080B0D]">
+        <div className="flex h-full w-full">
+          <div className="h-full bg-[#00E676]" style={{ width: `${successRate}%` }} />
+          <div className="h-full bg-[#ffb4ab]" style={{ width: `${failureRate}%` }} />
+          {!total && <div className="h-full w-full bg-white/10" />}
         </div>
       </div>
 
-      <div className="grid grid-cols-2 gap-2 text-xs font-black uppercase tracking-[0.08em] text-slate-600">
+      <div className="grid grid-cols-2 gap-2 font-mono text-xs uppercase tracking-wider text-[#B0B3B8]">
         <div className="flex items-center gap-1.5">
-          <span className="h-3 w-3 rounded-full border border-black bg-[#00E676]" />
+          <span className="h-2.5 w-2.5 rounded-full bg-[#00E676]" />
           Success
         </div>
         <div className="flex items-center gap-1.5">
-          <span className="h-3 w-3 rounded-full border border-black bg-[#FF3B30]" />
+          <span className="h-2.5 w-2.5 rounded-full bg-[#ffb4ab]" />
           Failure
         </div>
       </div>
@@ -250,21 +253,21 @@ const StatusDistributionChart = ({ monitors, analyticsByMonitorId }) => {
   }, { down: 0, noLogs: 0, up: 0 });
   const total = Math.max(monitors.length, 1);
   const rows = [
-    { color: 'bg-[#00E676]', label: 'UP', value: buckets.up },
-    { color: 'bg-[#FF3B30]', label: 'DOWN', value: buckets.down },
-    { color: 'bg-slate-300', label: 'NO LOGS', value: buckets.noLogs },
+    { color: 'bg-[#00E676] shadow-[0_0_6px_rgba(0,230,118,0.5)]', label: 'UP', value: buckets.up },
+    { color: 'bg-[#ffb4ab] shadow-[0_0_6px_rgba(255,180,171,0.5)]', label: 'DOWN', value: buckets.down },
+    { color: 'bg-white/20', label: 'NO LOGS', value: buckets.noLogs },
   ];
 
   return (
-    <div className="rounded-2xl border-[3px] border-black bg-white p-5 shadow-[6px_6px_0_#0F172A]">
+    <div className="rounded border border-white/10 bg-[#080B0D] p-6 shadow-[6px_6px_0_#0F172A] transition-all duration-200 hover:border-[#00E676] hover:shadow-[0_0_12px_rgba(0,230,118,0.2),6px_6px_0_#0F172A]">
       <div className="flex items-center justify-between gap-3">
-        <div className="flex items-center gap-2">
-          <span className="grid h-10 w-10 place-items-center rounded-xl border-2 border-black bg-[#BFE8FF]">
-            <BarChart3 size={19} strokeWidth={3} />
+        <div className="flex items-center gap-3">
+          <span className="grid h-9 w-9 place-items-center rounded border border-white/10 bg-[#111416] text-[#75ff9e]">
+            <BarChart3 size={18} />
           </span>
           <div>
-            <h3 className="text-sm font-black text-slate-950">Monitor distribution</h3>
-            <p className="text-sm font-medium leading-6 text-slate-500">Status split across active monitor records.</p>
+            <h3 className="font-bold text-lg text-[#F5F5F5]">Monitor distribution</h3>
+            <p className="text-sm text-[#B0B3B8]">Status split across active monitor records.</p>
           </div>
         </div>
       </div>
@@ -272,11 +275,11 @@ const StatusDistributionChart = ({ monitors, analyticsByMonitorId }) => {
       <div className="mt-5 grid gap-4">
         {rows.map((row) => (
           <div key={row.label} className="grid grid-cols-[72px_minmax(0,1fr)_36px] items-center gap-3">
-            <span className="text-xs font-black uppercase tracking-[0.08em] text-slate-600">{row.label}</span>
-            <div className="h-7 overflow-hidden rounded-lg border-2 border-black bg-[#FDFBF7]">
-              <div className={`h-full ${row.color}`} style={{ width: `${Math.max(row.value ? 8 : 0, (row.value / total) * 100)}%` }} />
+            <span className="font-mono text-xs uppercase tracking-wider text-[#B0B3B8]">{row.label}</span>
+            <div className="h-3 overflow-hidden rounded-full border border-white/10 bg-[#111416]">
+              <div className={`h-full rounded-full ${row.color}`} style={{ width: `${Math.max(row.value ? 6 : 0, (row.value / total) * 100)}%` }} />
             </div>
-            <span className="text-right text-sm font-black text-slate-950">{row.value}</span>
+            <span className="text-right font-mono text-sm font-bold text-[#F5F5F5]">{row.value}</span>
           </div>
         ))}
       </div>
@@ -287,57 +290,56 @@ const StatusDistributionChart = ({ monitors, analyticsByMonitorId }) => {
 const AIInsightPanel = ({ insight, incident }) => {
   if (!insight && !incident) {
     return (
-      <div className="rounded-xl border-2 border-dashed border-slate-300 bg-[#FDFBF7] p-4">
-        <div className="flex items-center gap-2 text-xs font-black uppercase tracking-[0.08em] text-slate-600">
-          <BrainCircuit size={16} strokeWidth={3} />
+      <div className="rounded border border-dashed border-white/10 bg-[#080B0D] p-4">
+        <div className="flex items-center gap-2 font-mono text-xs uppercase tracking-wider text-[#B0B3B8]">
+          <BrainCircuit size={15} className="text-[#75ff9e]" />
           AI summary
         </div>
-        <p className="mt-3 text-sm font-bold leading-6 text-slate-500">
+        <p className="mt-2 text-sm text-[#B0B3B8]">
           No backend AI incident has been generated for this monitor yet.
         </p>
       </div>
     );
   }
 
-  // Get suggestions from formatted insight (already normalized to array)
   const suggestions = insight?.suggestions || [];
 
   return (
-    <div className="rounded-xl border-2 border-black bg-[#FDFBF7] p-4">
+    <div className="rounded border border-white/10 bg-[#080B0D] p-4">
       <div className="flex flex-wrap items-center justify-between gap-2">
         <div className="flex items-center gap-2">
-          <span className="grid h-9 w-9 place-items-center rounded-xl border-2 border-black bg-[#BFE8FF] text-black">
-            <BrainCircuit size={18} strokeWidth={3} />
+          <span className="grid h-8 w-8 place-items-center rounded border border-[#00E676]/30 bg-[#00E676]/10 text-[#75ff9e]">
+            <BrainCircuit size={16} />
           </span>
           <div>
-            <p className="text-xs font-black uppercase tracking-[0.08em] text-slate-600">AI incident summary</p>
-            <p className="text-sm font-black uppercase text-slate-950">{insight?.status || incident?.status || 'Pending'}</p>
+            <p className="font-mono text-xs uppercase tracking-wider text-[#B0B3B8]">AI incident summary</p>
+            <p className="font-mono text-xs font-bold uppercase text-[#75ff9e]">{insight?.status || incident?.status || 'Pending'}</p>
           </div>
         </div>
-        <span className="rounded-full border-2 border-black bg-white px-2.5 py-1 text-xs font-black uppercase text-slate-600">
+        <span className="rounded border border-white/10 bg-[#111416] px-2.5 py-1 font-mono text-[10px] text-[#B0B3B8]">
           {formatDateTime(insight?.createdAt || incident?.createdAt || incident?.startedAt)}
         </span>
       </div>
 
       {incident && (
-        <div className="mt-3 flex items-start gap-2 rounded-lg border-2 border-black bg-white p-2">
-          <Clock3 className="mt-0.5 shrink-0 text-[#1E6BFF]" size={16} strokeWidth={3} />
-          <p className="text-sm font-bold leading-6 text-slate-600">
+        <div className="mt-3 flex items-start gap-2 rounded border border-white/10 bg-[#111416] p-3">
+          <Clock3 className="mt-0.5 shrink-0 text-[#75ff9e]" size={15} />
+          <p className="font-mono text-xs leading-5 text-[#B0B3B8]">
             {incident.message || 'Incident opened by backend failure processor'} with {incident.failCount ?? 0} failed checks.
           </p>
         </div>
       )}
 
-      <p className="mt-4 max-w-3xl text-sm font-bold leading-6 text-slate-700">
+      <p className="mt-4 max-w-3xl text-sm leading-relaxed text-[#F5F5F5]/90">
         {insight?.reason || 'AI analysis is waiting for enough failure context.'}
       </p>
 
       {suggestions.length > 0 && (
         <div className="mt-3 grid gap-2">
           {suggestions.map((suggestion, index) => (
-            <div key={`${suggestion}-${index}`} className="flex items-start gap-2 rounded-lg border-2 border-black bg-[#FFD600] p-2">
-              <Lightbulb className="mt-0.5 shrink-0 text-black" size={16} strokeWidth={3} />
-              <p className="text-sm font-black leading-6 text-black">{suggestion}</p>
+            <div key={`${suggestion}-${index}`} className="flex items-start gap-2 rounded border border-[#00E676]/30 bg-[#00E676]/5 p-3">
+              <Lightbulb className="mt-0.5 shrink-0 text-[#75ff9e]" size={15} />
+              <p className="font-mono text-xs font-bold leading-5 text-[#75ff9e]">{suggestion}</p>
             </div>
           ))}
         </div>
@@ -364,12 +366,12 @@ const IncidentsSection = ({
   const aiInsightCount = Object.values(aiInsightsByMonitorId).reduce((count, insights) => count + (insights?.length || 0), 0);
 
   return (
-    <section className="grid min-w-0 gap-5">
-      <div className="rounded-2xl border-[3px] border-black bg-white p-5 shadow-[6px_6px_0_#0F172A]">
+    <section className="grid min-w-0 gap-5 pb-8 font-['Geist',sans-serif]">
+      <div className="rounded border border-white/10 bg-[#080B0D] p-6 shadow-[6px_6px_0_#0F172A] transition-all duration-200 hover:border-[#00E676] hover:shadow-[0_0_12px_rgba(0,230,118,0.2),6px_6px_0_#0F172A]">
         <div className="grid gap-4 md:grid-cols-[minmax(0,1fr)_auto] md:items-center">
           <div>
-            <h2 className="text-xl font-black text-slate-950">Incident signal</h2>
-            <p className="mt-2 max-w-2xl text-sm font-medium leading-6 text-slate-600">
+            <h2 className="text-xl font-bold text-[#F5F5F5]">Incident signal</h2>
+            <p className="mt-1 max-w-2xl text-sm text-[#B0B3B8]">
               Live incident health from backend monitor checks, log analytics, incident records, and AI summaries.
             </p>
           </div>
@@ -378,9 +380,9 @@ const IncidentsSection = ({
               type="button"
               onClick={onRefresh}
               disabled={isLoadingAnalytics || monitors.length === 0}
-              className="inline-flex h-11 items-center justify-center gap-2 rounded-xl border-[3px] border-black bg-[#FFD600] px-4 text-sm font-black text-black shadow-[3px_3px_0_#0F172A] hover:bg-[#00E676] disabled:cursor-not-allowed disabled:opacity-60"
+              className="cursor-pointer inline-flex h-10 items-center justify-center gap-2 rounded border border-[#00E676] bg-transparent px-4 font-mono text-xs text-[#00E676] transition-all duration-200 hover:bg-[#00E676]/10 hover:shadow-[0_0_8px_rgba(0,230,118,0.2)] disabled:cursor-not-allowed disabled:opacity-50"
             >
-              <RefreshCcw className={isLoadingAnalytics ? 'animate-spin' : ''} size={17} strokeWidth={3} />
+              <RefreshCcw className={isLoadingAnalytics ? 'animate-spin' : ''} size={15} />
               Refresh logs
             </button>
           </div>
@@ -394,7 +396,7 @@ const IncidentsSection = ({
         </div>
 
         {(analyticsError || incidentDetailsError) && (
-          <div className="mt-4 rounded-xl border-[3px] border-black bg-red-50 p-3 text-sm font-black text-red-700">
+          <div className="mt-4 rounded border border-red-500/30 bg-red-500/10 p-3 font-mono text-xs text-[#ffb4ab]">
             {analyticsError || incidentDetailsError}
           </div>
         )}
@@ -403,9 +405,9 @@ const IncidentsSection = ({
       <StatusDistributionChart analyticsByMonitorId={analyticsByMonitorId} monitors={monitors} />
 
       {monitors.length === 0 ? (
-        <div className="rounded-2xl border-[3px] border-dashed border-slate-300 bg-white p-8 text-center shadow-[6px_6px_0_#0F172A]">
-          <p className="text-lg font-black text-slate-950">No monitors yet</p>
-          <p className="mt-2 text-sm font-medium leading-6 text-slate-500">
+        <div className="rounded border border-dashed border-white/10 bg-[#080B0D] p-8 text-center shadow-[6px_6px_0_#0F172A]">
+          <p className="text-lg font-bold text-[#F5F5F5]">No monitors yet</p>
+          <p className="mt-2 text-sm text-[#B0B3B8]">
             Create a monitor first, then log analytics can appear here after checks run.
           </p>
         </div>
@@ -418,17 +420,17 @@ const IncidentsSection = ({
             const health = getHealthStyle(analytics);
 
             return (
-              <article key={monitor.id} className="min-w-0 rounded-2xl border-[3px] border-black bg-white p-5 shadow-[6px_6px_0_#0F172A]">
+              <article key={monitor.id} className="min-w-0 rounded border border-white/10 bg-[#080B0D] p-6 shadow-[6px_6px_0_#0F172A] transition-all duration-200 hover:border-[#00E676] hover:shadow-[0_0_12px_rgba(0,230,118,0.2),6px_6px_0_#0F172A]">
                 <div className="flex min-w-0 items-start justify-between gap-3">
                   <div className="min-w-0">
                     <div className="flex min-w-0 items-center gap-2">
-                      <span className={`h-3 w-3 shrink-0 rounded-full border-2 border-black ${health.dot}`} />
-                      <h3 className="truncate text-lg font-black text-slate-950">{monitor.name}</h3>
+                      <span className={`h-2.5 w-2.5 shrink-0 rounded-full ${health.dot}`} />
+                      <h3 className="truncate text-lg font-bold text-[#F5F5F5]">{monitor.name}</h3>
                     </div>
-                    <p className="mt-2 break-all text-sm font-bold leading-6 text-slate-600">{monitor.method} {monitor.url}</p>
-                    <p className="mt-1 text-xs font-black uppercase tracking-[0.08em] text-slate-500">Every {formatInterval(monitor.interval)}</p>
+                    <p className="mt-1 break-all font-mono text-xs text-[#B0B3B8]">{monitor.method} {monitor.url}</p>
+                    <p className="mt-1 font-mono text-[10px] uppercase text-[#B0B3B8]/60">Every {formatInterval(monitor.interval)}</p>
                   </div>
-                  <span className={`shrink-0 rounded-full border px-3 py-1.5 text-xs font-black uppercase ${health.badge}`}>
+                  <span className={`shrink-0 rounded border px-2.5 py-1 font-mono text-[10px] uppercase ${health.badge}`}>
                     {isLoadingAnalytics && !analytics ? 'LOADING' : health.label}
                   </span>
                 </div>
@@ -440,35 +442,35 @@ const IncidentsSection = ({
                   <MetricTile label="Avg latency" value={analytics ? `${analytics.avgLatency}ms` : '-'} />
                 </div>
 
-                <div className="mt-6 border-t-2 border-slate-200 pt-5">
+                <div className="mt-6 border-t border-white/10 pt-5">
                   <div className="mb-3 flex items-center gap-2">
-                    <BarChart3 size={18} strokeWidth={3} className="text-[#1E6BFF]" />
-                    <h4 className="text-sm font-black uppercase tracking-[0.08em] text-slate-700">Log analytics</h4>
+                    <BarChart3 size={16} className="text-[#75ff9e]" />
+                    <h4 className="font-mono text-xs uppercase tracking-wider text-[#B0B3B8]">Log analytics</h4>
                   </div>
                 </div>
 
                 <div className="grid gap-4 2xl:grid-cols-[minmax(0,1fr)_300px] 2xl:items-stretch">
                   <TrendChart trend={analytics?.trend} />
                   <div className="grid gap-2">
-                    <div className="flex items-center gap-2 rounded-xl border-2 border-black bg-[#FDFBF7] px-3 py-2">
-                      <CheckCircle2 size={17} strokeWidth={3} className="text-emerald-700" />
-                      <span className="text-xs font-black uppercase tracking-[0.12em] text-slate-500">Uptime</span>
-                      <span className="ml-auto text-sm font-black text-slate-950">{analytics ? `${analytics.uptime}%` : '-'}</span>
+                    <div className="flex items-center gap-2 rounded border border-white/10 bg-[#111416] px-3 py-2.5">
+                      <CheckCircle2 size={16} className="text-[#00E676]" />
+                      <span className="font-mono text-xs uppercase tracking-wider text-[#B0B3B8]">Uptime</span>
+                      <span className="ml-auto font-mono text-sm font-bold text-[#F5F5F5]">{analytics ? `${analytics.uptime}%` : '-'}</span>
                     </div>
-                    <div className="flex items-center gap-2 rounded-xl border-2 border-black bg-[#FDFBF7] px-3 py-2">
-                      <AlertTriangle size={17} strokeWidth={3} className="text-amber-700" />
-                      <span className="text-xs font-black uppercase tracking-[0.12em] text-slate-500">Latest</span>
-                      <span className="ml-auto text-sm font-black text-slate-950">{analytics?.status || '-'}</span>
+                    <div className="flex items-center gap-2 rounded border border-white/10 bg-[#111416] px-3 py-2.5">
+                      <AlertTriangle size={16} className="text-[#ffba79]" />
+                      <span className="font-mono text-xs uppercase tracking-wider text-[#B0B3B8]">Latest</span>
+                      <span className="ml-auto font-mono text-sm font-bold text-[#F5F5F5]">{analytics?.status || '-'}</span>
                     </div>
-                    <div className="flex items-center gap-2 rounded-xl border-2 border-black bg-[#FDFBF7] px-3 py-2">
-                      <BarChart3 size={17} strokeWidth={3} className="text-[#1E6BFF]" />
-                      <span className="text-xs font-black uppercase tracking-[0.12em] text-slate-500">Trend</span>
-                      <span className="ml-auto text-sm font-black text-slate-950">{analytics?.trend?.length || 0}</span>
+                    <div className="flex items-center gap-2 rounded border border-white/10 bg-[#111416] px-3 py-2.5">
+                      <BarChart3 size={16} className="text-[#75ff9e]" />
+                      <span className="font-mono text-xs uppercase tracking-wider text-[#B0B3B8]">Trend</span>
+                      <span className="ml-auto font-mono text-sm font-bold text-[#F5F5F5]">{analytics?.trend?.length || 0}</span>
                     </div>
-                    <div className="flex items-center gap-2 rounded-xl border-2 border-black bg-[#FDFBF7] px-3 py-2">
-                      <Activity size={17} strokeWidth={3} className="text-red-600" />
-                      <span className="text-xs font-black uppercase tracking-[0.12em] text-slate-500">Signal</span>
-                      <span className="ml-auto text-sm font-black text-slate-950">
+                    <div className="flex items-center gap-2 rounded border border-white/10 bg-[#111416] px-3 py-2.5">
+                      <Activity size={16} className="text-[#ffb4ab]" />
+                      <span className="font-mono text-xs uppercase tracking-wider text-[#B0B3B8]">Signal</span>
+                      <span className="ml-auto font-mono text-sm font-bold text-[#F5F5F5]">
                         {analytics?.failures ? 'Noisy' : 'Calm'}
                       </span>
                     </div>
@@ -480,10 +482,10 @@ const IncidentsSection = ({
                   <LatencyBarChart trend={analytics?.trend} />
                 </div>
 
-                <div className="mt-6 border-t-2 border-slate-200 pt-5">
+                <div className="mt-6 border-t border-white/10 pt-5">
                   <div className="mb-3 flex items-center gap-2">
-                    <BrainCircuit size={18} strokeWidth={3} className="text-[#1E6BFF]" />
-                    <h4 className="text-sm font-black uppercase tracking-[0.08em] text-slate-700">AI incident context</h4>
+                    <BrainCircuit size={16} className="text-[#75ff9e]" />
+                    <h4 className="font-mono text-xs uppercase tracking-wider text-[#B0B3B8]">AI incident context</h4>
                   </div>
                   <AIInsightPanel insight={latestInsight} incident={latestIncident} />
                 </div>
@@ -494,8 +496,8 @@ const IncidentsSection = ({
       )}
 
       {isLoadingAnalytics && (
-        <div className="fixed bottom-24 right-4 z-30 inline-flex items-center gap-2 rounded-xl border-[3px] border-black bg-white px-4 py-3 text-sm font-black text-slate-950 shadow-[4px_4px_0_#0F172A] lg:bottom-4">
-          <Activity size={17} strokeWidth={3} className="text-[#1E6BFF]" />
+        <div className="fixed bottom-24 right-4 z-30 inline-flex items-center gap-2 rounded border border-white/10 bg-[#080B0D] px-4 py-3 font-mono text-xs text-[#F5F5F5] shadow-[0_0_12px_rgba(0,0,0,0.8)] lg:bottom-4">
+          <Activity size={16} className="animate-pulse text-[#75ff9e]" />
           Loading log analytics
         </div>
       )}

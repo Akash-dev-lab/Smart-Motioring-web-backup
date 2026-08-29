@@ -1,40 +1,45 @@
-import { AlertTriangle, CheckCircle2, Signal, Timer } from 'lucide-react';
+import { AlertTriangle, BarChart3, CheckCircle2, Timer } from 'lucide-react';
 import { formatInterval, statusStyles } from '../dashboardUtils';
 
 const DonutChart = ({ activeCount, pausedCount, totalCount }) => {
   const activePercent = totalCount ? (activeCount / totalCount) * 100 : 0;
-  const circumference = 2 * Math.PI * 36;
+  const circumference = 251.2;
 
   return (
-    <div className="grid gap-4 rounded-2xl border-[3px] border-black bg-white p-5 shadow-[6px_6px_0_#0F172A] sm:grid-cols-[150px_minmax(0,1fr)] sm:items-center">
-      <svg viewBox="0 0 100 100" role="img" aria-label="Monitor active versus paused chart" className="mx-auto h-36 w-36">
-        <circle cx="50" cy="50" r="36" fill="none" stroke="#E2E8F0" strokeWidth="16" />
-        <circle
-          cx="50"
-          cy="50"
-          r="36"
-          fill="none"
-          stroke="#00E676"
-          strokeDasharray={`${(activePercent / 100) * circumference} ${circumference}`}
-          strokeLinecap="round"
-          strokeWidth="16"
-          transform="rotate(-90 50 50)"
-        />
-        <text x="50" y="48" textAnchor="middle" className="fill-slate-950 text-[16px] font-black">{Math.round(activePercent)}%</text>
-        <text x="50" y="62" textAnchor="middle" className="fill-slate-500 text-[7px] font-black uppercase">active</text>
-      </svg>
-      <div>
-        <h2 className="text-lg font-black text-slate-950">Monitor state</h2>
-        <p className="mt-1 text-sm font-medium leading-6 text-slate-500">Active records are eligible for backend scheduler checks.</p>
-        <div className="mt-4 grid gap-2">
-          <div className="flex items-center gap-2 text-sm font-black text-slate-950">
-            <span className="h-3 w-3 rounded-full border-2 border-black bg-[#00E676]" />
-            Active {activeCount}
+    <div className="col-span-1 lg:col-span-5 flex flex-col justify-center rounded border border-white/10 border-t-2 border-t-[#00E676] bg-[#080B0D] p-6 shadow-[6px_6px_0_#0F172A] transition-all duration-200 hover:border-[#00E676] hover:shadow-[0_0_12px_rgba(0,230,118,0.2),6px_6px_0_#0F172A]">
+      <div className="flex items-center gap-6 sm:gap-8">
+        <div className="relative h-32 w-32 shrink-0">
+          <svg viewBox="0 0 100 100" role="img" aria-label="Monitor active versus paused chart" className="h-full w-full -rotate-90">
+            <circle cx="50" cy="50" r="40" fill="transparent" stroke="rgba(255,255,255,0.05)" strokeWidth="8" />
+            <circle
+              cx="50"
+              cy="50"
+              r="40"
+              fill="transparent"
+              stroke="#00E676"
+              strokeDasharray={circumference}
+              strokeDashoffset={circumference - (activePercent / 100) * circumference}
+              strokeWidth="8"
+            />
+          </svg>
+          <div className="absolute inset-0 flex flex-col items-center justify-center text-center">
+            <span className="text-xl font-bold text-[#F5F5F5]">{Math.round(activePercent)}%</span>
+            <span className="font-mono text-[10px] font-bold uppercase tracking-wider text-[#75ff9e]">ACTIVE</span>
           </div>
-          <div className="flex items-center gap-2 text-sm font-black text-slate-950">
-            <span className="h-3 w-3 rounded-full border-2 border-black bg-slate-300" />
-            Paused {pausedCount}
-          </div>
+        </div>
+        <div>
+          <h3 className="mb-2 text-lg font-bold text-[#F5F5F5]">Monitor state</h3>
+          <p className="mb-4 text-sm text-[#B0B3B8]">Active records are eligible for backend scheduler checks.</p>
+          <ul className="space-y-2">
+            <li className="flex items-center gap-2 font-mono text-xs text-[#F5F5F5]">
+              <span className="h-3 w-3 rounded-full border border-[#00E676] bg-[#00E676]" />
+              <span>Active {activeCount}</span>
+            </li>
+            <li className="flex items-center gap-2 font-mono text-xs text-[#B0B3B8]">
+              <span className="h-3 w-3 rounded-full border border-[#B0B3B8]" />
+              <span>Paused {pausedCount}</span>
+            </li>
+          </ul>
         </div>
       </div>
     </div>
@@ -46,25 +51,25 @@ const IntervalBars = ({ monitors }) => {
   const visibleMonitors = monitors.slice(0, 6);
 
   return (
-    <article className="rounded-2xl border-[3px] border-black bg-white p-5 shadow-[6px_6px_0_#0F172A]">
-      <h2 className="text-lg font-black text-slate-950">Check intervals</h2>
-      <p className="mt-1 text-sm font-medium text-slate-500">Per-monitor interval values stored by the backend.</p>
-      <div className="mt-5 grid gap-3">
+    <article className="col-span-1 lg:col-span-5 flex flex-col justify-center rounded border border-white/10 bg-[#080B0D] p-6 shadow-[6px_6px_0_#0F172A] transition-all duration-200 hover:border-[#00E676] hover:shadow-[0_0_12px_rgba(0,230,118,0.2),6px_6px_0_#0F172A]">
+      <h3 className="mb-2 text-lg font-bold text-[#F5F5F5]">Check intervals</h3>
+      <p className="mb-6 text-sm text-[#B0B3B8]">Per-monitor interval values stored by the backend.</p>
+      <div className="w-full space-y-4">
         {visibleMonitors.length === 0 ? (
-          <div className="rounded-xl border-[3px] border-dashed border-slate-300 bg-[#FDFBF7] p-4 text-sm font-black text-slate-500">
+          <div className="rounded border border-dashed border-white/10 p-4 font-mono text-xs text-[#B0B3B8]">
             No interval data yet
           </div>
         ) : (
           visibleMonitors.map((monitor) => (
-            <div key={monitor.id} className="grid gap-2">
-              <div className="flex items-center justify-between gap-3 text-xs font-black uppercase tracking-[0.12em]">
-                <span className="min-w-0 truncate text-slate-500">{monitor.name}</span>
-                <span className="text-slate-950">{formatInterval(monitor.interval)}</span>
+            <div key={monitor.id} className="w-full">
+              <div className="mb-2 flex items-end justify-between">
+                <span className="max-w-[70%] truncate font-mono text-xs uppercase tracking-wider text-[#F5F5F5]">{monitor.name}</span>
+                <span className="font-mono text-[10px] uppercase text-[#F5F5F5]">{formatInterval(monitor.interval)}</span>
               </div>
-              <div className="h-4 rounded-full border-2 border-black bg-[#FDFBF7]">
+              <div className="h-3 w-full overflow-hidden rounded-full border border-white/10 bg-[#080B0D]">
                 <div
-                  className="h-full rounded-full border-r-2 border-black bg-[#1E6BFF]"
-                  style={{ width: `${Math.max(8, (Number(monitor.interval || 0) / maxInterval) * 100)}%` }}
+                  className="h-full rounded-full bg-green-500 opacity-80"
+                  style={{ width: `${Math.max(6, (Number(monitor.interval || 0) / maxInterval) * 100)}%` }}
                 />
               </div>
             </div>
@@ -83,92 +88,140 @@ const LogCoverageChart = ({ analyticsByMonitorId, monitors }) => {
   const maxChecks = Math.max(...rows.map((row) => row.checks), 1);
 
   return (
-    <article className="rounded-2xl border-[3px] border-black bg-white p-5 shadow-[6px_6px_0_#0F172A]">
-      <h2 className="text-lg font-black text-slate-950">Log coverage</h2>
-      <p className="mt-1 text-sm font-medium text-slate-500">Recent check counts from backend log analytics.</p>
-      <div className="mt-5 grid gap-3">
+    <div className="col-span-1 lg:col-span-7 flex flex-col justify-center rounded border border-white/10 border-t-2 border-t-[#00E676] bg-[#080B0D] p-6 shadow-[6px_6px_0_#0F172A] transition-all duration-200 hover:border-[#00E676] hover:shadow-[0_0_12px_rgba(0,230,118,0.2),6px_6px_0_#0F172A]">
+      <h3 className="mb-2 text-lg font-bold text-[#F5F5F5]">Log coverage</h3>
+      <p className="mb-6 text-sm text-[#B0B3B8]">Recent check counts from backend log analytics.</p>
+      <div className="w-full space-y-4">
         {rows.length === 0 ? (
-          <div className="rounded-xl border-[3px] border-dashed border-slate-300 bg-[#FDFBF7] p-4 text-sm font-black text-slate-500">
+          <div className="rounded border border-dashed border-white/10 p-4 font-mono text-xs text-[#B0B3B8]">
             No log data yet
           </div>
         ) : (
           rows.map(({ monitor, checks }) => (
-            <div key={monitor.id} className="grid gap-2">
-              <div className="flex items-center justify-between gap-3 text-xs font-black uppercase tracking-[0.12em]">
-                <span className="min-w-0 truncate text-slate-500">{monitor.name}</span>
-                <span className="text-slate-950">{checks} checks</span>
+            <div key={monitor.id} className="w-full">
+              <div className="mb-2 flex items-end justify-between">
+                <span className="max-w-[70%] truncate font-mono text-xs uppercase tracking-wider text-[#F5F5F5]">{monitor.name}</span>
+                <span className="font-mono text-[10px] uppercase text-[#F5F5F5]">{checks} CHECKS</span>
               </div>
-              <div className="h-4 rounded-full border-2 border-black bg-[#FDFBF7]">
+              <div className="h-3 w-full overflow-hidden rounded-full border border-white/10 bg-[#080B0D]">
                 <div
-                  className="h-full rounded-full border-r-2 border-black bg-[#00E676]"
-                  style={{ width: `${Math.max(8, (checks / maxChecks) * 100)}%` }}
+                  className="h-full rounded-full bg-[#00E676] shadow-[0_0_8px_rgba(0,230,118,0.5)]"
+                  style={{ width: `${Math.max(6, (checks / maxChecks) * 100)}%` }}
                 />
               </div>
             </div>
           ))
         )}
       </div>
-    </article>
+    </div>
   );
 };
 
 const OverviewSection = ({ activeCount, analyticsByMonitorId = {}, averageInterval, monitors, onViewMonitors, pausedCount, totalCount }) => (
   <>
-    <section className="grid min-w-0 gap-4 md:grid-cols-2 xl:grid-cols-4">
+    {/* Metrics Grid */}
+    <section className="grid min-w-0 grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4 font-['Geist',sans-serif]">
       {[
-        ['Total monitors', totalCount, 'Stored in backend', Signal, 'text-emerald-700', 'bg-[#00E676]'],
-        ['Active monitors', activeCount, 'Scheduler eligible', CheckCircle2, 'text-blue-800', 'bg-[#BFE8FF]'],
-        ['Paused monitors', pausedCount, 'Currently disabled', AlertTriangle, 'text-amber-900', 'bg-[#FFD600]'],
-        ['Avg interval', activeCount ? `${averageInterval}s` : '-', 'From monitor records', Timer, 'text-white', 'bg-[#1E6BFF]'],
-      ].map(([label, value, note, Icon, iconClass, bgClass]) => (
-        <article key={label} className="min-w-0 rounded-2xl border-[3px] border-black bg-white p-5 shadow-[6px_6px_0_#0F172A]">
-          <div className="flex items-center justify-between">
-            <p className="text-sm font-black text-slate-500">{label}</p>
-            <span className={`grid h-10 w-10 place-items-center rounded-xl border-[3px] border-black ${bgClass} ${iconClass}`}>
-              <Icon size={20} strokeWidth={3} />
+        {
+          label: 'Total monitors',
+          value: totalCount,
+          note: 'Stored in backend',
+          Icon: BarChart3,
+          iconColor: 'text-[#75ff9e]',
+        },
+        {
+          label: 'Active monitors',
+          value: activeCount,
+          note: 'Scheduler eligible',
+          Icon: CheckCircle2,
+          iconColor: 'text-[#93ffac]',
+        },
+        {
+          label: 'Paused monitors',
+          value: pausedCount,
+          note: 'Currently disabled',
+          Icon: AlertTriangle,
+          iconColor: 'text-[#ffba79]',
+        },
+        {
+          label: 'Avg interval',
+          value: activeCount ? `${averageInterval}s` : '-',
+          note: 'From monitor records',
+          Icon: Timer,
+          iconColor: 'text-[#62ff96]',
+        },
+      ].map(({ label, value, note, Icon, iconColor }) => (
+        <div
+          key={label}
+          className="group relative flex min-w-0 flex-col justify-between overflow-hidden rounded border border-white/10 bg-[#080B0D] p-6 shadow-[6px_6px_0_#0F172A] transition-all duration-200 hover:border-[#00E676] hover:shadow-[0_0_12px_rgba(0,230,118,0.2),6px_6px_0_#0F172A]"
+        >
+          <div className="flex items-start justify-between">
+            <span className="font-mono text-xs font-semibold uppercase tracking-wider text-[#B0B3B8]">
+              {label}
             </span>
+            <Icon size={22} className={iconColor} />
           </div>
-          <div className="mt-4 text-3xl font-black tracking-tight text-slate-950">{value}</div>
-          <p className="mt-1 text-sm font-bold text-slate-500">{note}</p>
-        </article>
+          <div className="mt-4 font-mono text-3xl font-bold text-[#F5F5F5] md:text-4xl">
+            {value}
+          </div>
+          <p className="mt-2 text-sm text-[#B0B3B8]">
+            {note}
+          </p>
+        </div>
       ))}
     </section>
 
-    <section className="grid min-w-0 gap-5 xl:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]">
+    <section className="grid min-w-0 grid-cols-1 gap-4 lg:grid-cols-12 font-['Geist',sans-serif]">
       <DonutChart activeCount={activeCount} pausedCount={pausedCount} totalCount={totalCount} />
       <LogCoverageChart analyticsByMonitorId={analyticsByMonitorId} monitors={monitors} />
     </section>
 
-    <section className="grid min-w-0 gap-5 xl:grid-cols-[minmax(0,1fr)_380px]">
-      <article className="min-w-0 rounded-2xl border-[3px] border-black bg-white p-5 shadow-[6px_6px_0_#0F172A]">
-        <div className="flex flex-wrap items-center justify-between gap-3">
+    <section className="grid min-w-0 grid-cols-1 gap-4 lg:grid-cols-12 pb-8 font-['Geist',sans-serif]">
+      <article className="col-span-1 lg:col-span-7 flex flex-col rounded border border-white/10 bg-[#080B0D] p-6 shadow-[6px_6px_0_#0F172A] transition-all duration-200 hover:border-[#00E676] hover:shadow-[0_0_12px_rgba(0,230,118,0.2),6px_6px_0_#0F172A]">
+        <div className="mb-6 flex flex-wrap items-start justify-between gap-3">
           <div>
-            <h2 className="text-lg font-black text-slate-950">Monitor records</h2>
-            <p className="mt-1 text-sm font-medium text-slate-500">Backend-backed monitor configuration and active state.</p>
+            <h3 className="text-lg font-bold text-[#F5F5F5]">Monitor records</h3>
+            <p className="mt-1 text-sm text-[#B0B3B8]">Backend-backed monitor configuration and active state.</p>
           </div>
           <button
             type="button"
             onClick={onViewMonitors}
-            className="rounded-xl border-[3px] border-black bg-[#1E6BFF] px-4 py-2 text-sm font-black text-white shadow-[3px_3px_0_#0F172A] hover:bg-blue-700"
+            className="rounded border border-[#00E676] bg-transparent px-4 py-2 font-mono text-xs text-[#00E676] transition-all duration-200 hover:bg-[#00E676]/10 hover:shadow-[0_0_8px_rgba(0,230,118,0.2)]"
           >
             View monitors
           </button>
         </div>
-        <div className="mt-5 grid gap-3 sm:grid-cols-2">
-          {monitors.slice(0, 4).map((monitor) => (
-            <div key={monitor.id} className="min-w-0 rounded-xl border-[3px] border-black bg-[#FDFBF7] p-4">
-              <div className="flex items-start justify-between gap-3">
-                <div className="min-w-0">
-                  <p className="truncate font-black text-slate-950">{monitor.name}</p>
-                  <p className="mt-1 truncate text-sm font-bold text-slate-500">{monitor.method} {monitor.url}</p>
-                  <p className="mt-1 text-xs font-black uppercase tracking-[0.12em] text-slate-400">{formatInterval(monitor.interval)}</p>
-                </div>
-                <span className={`shrink-0 rounded-full border px-2 py-1 text-[10px] font-black uppercase ${statusStyles[monitor.status]}`}>
-                  {monitor.status}
-                </span>
-              </div>
+        <div className="grid gap-3 sm:grid-cols-2">
+          {monitors.length === 0 ? (
+            <div className="col-span-full rounded border border-dashed border-white/10 p-4 font-mono text-xs text-[#B0B3B8]">
+              No monitor records found
             </div>
-          ))}
+          ) : (
+            monitors.slice(0, 4).map((monitor) => (
+              <div
+                key={monitor.id}
+                className="group rounded border border-white/10 bg-[#191c1e] p-4 transition-colors hover:border-[#75ff9e]/50"
+              >
+                <div className="flex items-start justify-between gap-3">
+                  <div className="min-w-0">
+                    <h4 className="mb-1 truncate font-bold text-[#F5F5F5]">{monitor.name}</h4>
+                    <p className="mb-2 truncate font-mono text-xs text-[#B0B3B8]">{monitor.method} {monitor.url}</p>
+                    <span className="font-mono text-[10px] uppercase text-[#B0B3B8]">{formatInterval(monitor.interval)}</span>
+                  </div>
+                  <span
+                    className={`shrink-0 rounded border px-2 py-1 font-mono text-[10px] uppercase ${monitor.status === 'active'
+                        ? 'border-[#00E676] bg-[#00E676]/5 text-[#75ff9e]'
+                        : monitor.status === 'paused'
+                          ? 'border-[#ffba79] bg-[#ffba79]/5 text-[#ffba79]'
+                          : 'border-white/20 bg-white/5 text-[#B0B3B8]'
+                      }`}
+                  >
+                    {monitor.status}
+                  </span>
+                </div>
+              </div>
+            ))
+          )}
         </div>
       </article>
 
