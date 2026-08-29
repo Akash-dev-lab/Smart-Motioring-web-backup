@@ -47,7 +47,7 @@ const HeroSection = () => {
                         <div className="flex items-center gap-2 rounded-full border border-[#3b4a3d] bg-[#1a1c1f] px-3 py-1">
                             <span className="h-2 w-2 animate-pulse rounded-full bg-[#ffe0bc]"></span>
                             <span
-                                className="text-xs font-medium uppercase tracking-[0.05em] text-[#bacbb9]"
+                                className="text-xs font-medium uppercase tracking-wider text-[#bacbb9]"
                                 style={{
                                     fontFamily: "JetBrains Mono, monospace",
                                     letterSpacing: "0.05em",
@@ -97,7 +97,7 @@ const HeroSection = () => {
                             <div className="flex items-center gap-2">
                                 <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-[#75ff9e]"></span>
                                 <span
-                                    className="text-xs font-medium uppercase tracking-[0.05em] text-[#bacbb9]"
+                                    className="text-xs font-medium uppercase tracking-wider text-[#bacbb9]"
                                     style={{
                                         fontFamily: "JetBrains Mono, monospace",
                                         letterSpacing: "0.05em",

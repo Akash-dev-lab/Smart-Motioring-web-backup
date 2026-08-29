@@ -75,3 +75,66 @@ body {
   background-color: rgba(10, 12, 16, 0.85) !important;
   backdrop-filter: blur(16px) !important;
 }
+
+/* Typing effect for the Search Bar */
+@keyframes typing {
+  from { width: 0 }
+  to { width: 100% }
+}
+
+@keyframes blink {
+  50% { border-color: transparent }
+}
+
+.animate-typing {
+  display: inline-block;
+  overflow: hidden;
+  white-space: nowrap;
+  border-right: 3px solid #22c55e;
+  animation: 
+    typing 3s steps(20, end) infinite,
+    blink .75s step-end infinite;
+}
+
+/* Float animation for telemetry clouds */
+@keyframes float {
+  0%, 100% { 
+    transform: translateY(0); 
+  }
+  50% { 
+    transform: translateY(-10px); 
+  }
+}
+
+.animate-float {
+  animation: float 6s ease-in-out infinite;
+}
+
+/* Telemetry cloud styles */
+.telemetry-cloud {
+  transition: transform 0.3s ease, border-color 0.3s ease;
+}
+
+.telemetry-cloud:hover {
+  border-color: rgba(117, 255, 158, 0.5) !important;
+  transform: translateY(-2px);
+}
+
+/* Bot rendering improvements for scaling */
+#monitoring-agent,
+#monitoring-agent * {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  image-rendering: -webkit-optimize-contrast;
+  image-rendering: crisp-edges;
+  transform: translateZ(0);
+  will-change: transform;
+}
+
+/* Improve rendering during 3D transforms */
+.bot-eye {
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+  -webkit-transform: translateZ(0);
+  transform: translateZ(0);
+}
